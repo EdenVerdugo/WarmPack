@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WarmPack.Windows
+namespace WarmPack.DataModel
 {
     public abstract class ONotifyPropertyChanged<T> : INotifyPropertyChanged
     {

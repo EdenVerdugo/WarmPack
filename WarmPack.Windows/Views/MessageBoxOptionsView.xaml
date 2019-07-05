@@ -1,0 +1,289 @@
+﻿<Window x:Class="WarmPack.Windows.Views.MessageBoxOptionsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WarmPack.Windows.Views"
+        mc:Ignorable="d"        
+        xmlns:converters="clr-namespace:WarmPack.Windows.Converters"
+        xmlns:wpf="clr-namespace:WarmPack.Windows.Controls"         
+        Title="MessageBoxView" 
+        SizeToContent="WidthAndHeight"
+        MinHeight="150"
+        MinWidth="325"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"        
+        Topmost="True"        
+        Background="Transparent" 
+        ResizeMode="CanResizeWithGrip" 
+        FontFamily="Arial"         
+        BorderThickness="1" 
+        BorderBrush="LightGray" 
+        AllowsTransparency="True"                 
+        Name="Window" 
+        wpf:WindowEx.EventOnLoadCommand="{Binding PlaySoundCommand}">
+    <Window.Resources>
+        <Style x:Key="ListBoxItemRadioButtonStyle" TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <RadioButton   IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}"
+                                       FontSize="16"                                    
+                                       Margin="3"
+                                       GroupName="Options"
+                                    >
+                            <RadioButton.Content>
+                                <TextBlock Text="{Binding OptionDescription, UpdateSourceTrigger=PropertyChanged}"
+                                           Margin="0"
+                                           VerticalAlignment="Center"
+                                           Foreground="#3675db"
+                                           />
+                            </RadioButton.Content>
+                        </RadioButton>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ListBoxItemCheckBoxStyle" TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <CheckBox   IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}"
+                                       FontSize="16"                                    
+                                       Margin="3"                                       
+                                    >
+                            <CheckBox.Content>
+                                <TextBlock Text="{Binding OptionDescription, UpdateSourceTrigger=PropertyChanged}"
+                                           Margin="0"
+                                           VerticalAlignment="Center"
+                                           Foreground="#3675db"
+                                           />
+                            </CheckBox.Content>
+                        </CheckBox>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <converters:EnumToVisibillityConverter x:Key="EnumToVisibillity"
+                                               />
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisibillity"
+                                                 />
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border"
+               BorderThickness="2"
+               Padding="4,2"
+               BorderBrush="DarkGray"
+               CornerRadius="3"
+               Background="{TemplateBinding Background}">
+                            <Grid >
+                                <ContentPresenter HorizontalAlignment="Center"
+                              VerticalAlignment="Center" Name="contentShadow"
+                                            >
+                                    <ContentPresenter.RenderTransform>
+                                        <TranslateTransform X="1.0" Y="1.0" />
+                                    </ContentPresenter.RenderTransform>
+                                </ContentPresenter>
+                                <ContentPresenter HorizontalAlignment="Center"
+                           VerticalAlignment="Center" Name="content"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="WindowStyle" Value="None"/>
+            <Setter Property="AllowsTransparency" Value="True"/>
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="Background" Value="MintCream"/>
+            <Setter Property="BorderBrush" Value="#0046E7"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}">
+                        <Border BorderThickness="1"
+                                BorderBrush="{Binding ToolbarColor2, UpdateSourceTrigger=PropertyChanged}"
+                                CornerRadius="6"
+                                Background="WhiteSmoke"
+                                >
+                            <Grid Background="{TemplateBinding Background}"                                     
+                              >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Border PreviewMouseLeftButtonDown="Border_PreviewMouseLeftButtonDown"
+                                        CornerRadius="5,5,0,0"
+                                        >
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0"
+                                                         EndPoint="0,1">
+                                            <GradientStop Offset="-0.5"                                                      
+                                                      Color="{Binding ToolbarColor1, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <GradientStop Offset="1"                                                      
+                                                      Color="{Binding ToolbarColor2, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <TextBlock 
+                                               TextAlignment="Left"
+                                               Margin="8"
+                                               FontSize="14"                                           
+                                               Foreground="#fff"
+                                               Text="{Binding Caption, UpdateSourceTrigger=PropertyChanged}"                                        
+                                               />
+                                </Border>
+
+                                <!-- here goes the content -->
+                                <ContentPresenter Grid.Row="1"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Style>
+    <Grid >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel FocusManager.FocusedElement="{Binding ElementName=MessageInputText}">
+                <StackPanel Orientation="Horizontal">
+                    <Viewbox Width="48" 
+                         Height="48" 
+                         Visibility="{Binding MessageStyle, Converter={StaticResource EnumToVisibillity}, ConverterParameter=Warning}"
+                         Margin="20">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" Fill="#ffc926" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <Viewbox Width="48" 
+                         Height="48"
+                         Visibility="{Binding MessageStyle, Converter={StaticResource EnumToVisibillity}, ConverterParameter=Error}"
+                         Margin="20">
+                        <Canvas Width="24" 
+                            Height="24">
+                            <Path Data="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" Fill="#f92a40" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <Viewbox Width="48" 
+                         Height="48"
+                         Visibility="{Binding MessageStyle, Converter={StaticResource EnumToVisibillity}, ConverterParameter=Info}"
+                         Margin="20">
+                        <Canvas Width="24" 
+                            Height="24">
+                            <Path Data="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" Fill="SkyBlue" 
+                              />
+                        </Canvas>
+                    </Viewbox>
+
+                    <Viewbox Width="48" 
+                         Height="48"
+                         Visibility="{Binding MessageStyle, Converter={StaticResource EnumToVisibillity}, ConverterParameter=Success}"
+                         Margin="20"
+                         >
+                        <Canvas Width="24" 
+                            Height="24">
+                            <Path Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z" Fill="#34db5a" />
+                        </Canvas>
+                    </Viewbox>
+                    <Viewbox Width="48" 
+                         Height="48"
+                         Visibility="{Binding MessageStyle, Converter={StaticResource EnumToVisibillity}, ConverterParameter=Question}"
+                         Margin="20">
+                        <Canvas Width="24" 
+                            Height="24">
+                            <Path Data="M11,18H13V16H11V18M12,6A4,4 0 0,0 8,10H10A2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3Z" Fill="#81aff9" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <TextBlock HorizontalAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       FontSize="14"
+                       MaxWidth="410"
+                       TextWrapping="WrapWithOverflow"
+                       Text="{Binding MessageBoxText, UpdateSourceTrigger=PropertyChanged}"
+                       Margin="15,15,15,10"
+                       />
+                </StackPanel>
+                <StackPanel>
+                    <StackPanel Visibility="{Binding MessageWithOptionSelectionMode, Converter={StaticResource EnumToVisibillity}, ConverterParameter=Single}">
+                        <ComboBox x:Name="MessageOptionsComboBox"
+                              Margin="10,5"
+                              Height="25"
+                              FontSize="16"
+                              Foreground="#3675db"
+                              ItemsSource="{Binding MessageOptionsDataSource, UpdateSourceTrigger=PropertyChanged}"
+                              DisplayMemberPath="OptionDescription"
+                              Visibility="{Binding MessageWithOptionControlStyle, Converter={StaticResource EnumToVisibillity}, ConverterParameter=ComboBox}"
+                              SelectedItem="{Binding MessageOptionSelected, UpdateSourceTrigger=PropertyChanged}"
+                        />
+                        <ListBox Margin="10,5"
+                             Foreground="#3675db"
+                             ItemsSource="{Binding MessageOptionsDataSource, UpdateSourceTrigger=PropertyChanged}"
+                             ItemContainerStyle="{StaticResource ListBoxItemRadioButtonStyle}"
+                             Visibility="{Binding MessageWithOptionControlStyle, Converter={StaticResource EnumToVisibillity}, ConverterParameter=RadioButtonsList}"
+                             SelectedItem="{Binding MessageOptionSelected, UpdateSourceTrigger=PropertyChanged}"
+                             >
+                        </ListBox>
+                    </StackPanel>
+
+
+                    <ListBox Margin="10,5"
+                             Foreground="#3675db"
+                             ItemsSource="{Binding MessageOptionsDataSourceMultiple, UpdateSourceTrigger=PropertyChanged}"
+                             ItemContainerStyle="{StaticResource ListBoxItemCheckBoxStyle}"                                                          
+                             Visibility="{Binding MessageWithOptionSelectionMode, Converter={StaticResource EnumToVisibillity}, ConverterParameter=Multiple}"
+                             >
+                    </ListBox>
+                </StackPanel>
+            </StackPanel>
+
+            <Border Grid.Row="1"
+                    Background="#dde"
+                    CornerRadius="0,0,5,5"
+                    >
+                <Grid>
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right" 
+                                Visibility="{Binding MessageOptions, Converter={StaticResource EnumToVisibillity}, ConverterParameter=ButtonsAsButtons}"
+                        >
+                        <Button Content="Aceptar"
+                            Width="75"
+                            Height="21"
+                            Command="{Binding OKCommand}"
+                            CommandParameter="{Binding ElementName=Window}"
+                            Margin="5,0"                             
+                            BorderThickness="1"                              
+                            Visibility="{Binding CanShowOKButton, Converter={StaticResource BoolToVisibillity}, UpdateSourceTrigger=PropertyChanged}"
+                        />
+                        <Button Content="Cancelar"
+                            Width="75"
+                            Height="21"
+                            Command="{Binding CancelCommand}"
+                            CommandParameter="{Binding ElementName=Window}"
+                            Margin="5,0"                             
+                            BorderThickness="1"  
+                            Visibility="{Binding CanShowCancelButton, Converter={StaticResource BoolToVisibillity}, UpdateSourceTrigger=PropertyChanged}"
+                        />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </Grid>
+</Window>

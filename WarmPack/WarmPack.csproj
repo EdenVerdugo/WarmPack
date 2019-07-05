@@ -52,6 +52,7 @@
     <Compile Include="Classes\Castable.cs" />
     <Compile Include="Classes\Result.cs" />
     <Compile Include="Classes\ResultList.cs" />
+    <Compile Include="DataModel\ONotifyPropertyChanged.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Extensions\DataTableExtensions.cs" />
     <Compile Include="Extensions\DecimalExtensions.cs" />
@@ -67,6 +68,8 @@
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\ExpressionsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Threading\Splash.cs" />
+    <Compile Include="Threading\Task.cs" />
     <Compile Include="Utilities\AppLogging.cs" />
     <Compile Include="Utilities\CrashReportService.cs" />
     <Compile Include="Utilities\Encrypter.cs" />
@@ -75,16 +78,7 @@
     <Compile Include="Utilities\MailSenderAttachment.cs" />
     <Compile Include="Utilities\MailSenderAttachmentList.cs" />
     <Compile Include="Utilities\ScreenCapture.cs" />
-    <Compile Include="Windows\Message.cs" />
-    <Compile Include="Windows\ONotifyPropertyChanged.cs" />
-    <Compile Include="Windows\RelayCommand.cs" />
-    <Compile Include="Windows\ViewModels\MessageInputViewModel.cs" />
-    <Compile Include="Windows\ViewModels\MessageViewModel.cs" />
-    <Compile Include="Windows\ViewModels\MessageWithOptionsViewModel.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Windows\Views\" />
-    <Folder Include="Windows\WPF\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
