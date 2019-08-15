@@ -98,6 +98,8 @@
     <Compile Include="Utilities\MailSenderAttachmentList.cs" />
     <Compile Include="Utilities\ScreenCapture.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Web\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WarmPack.Helpers
 {
-    internal static class ExpressionsHelper
+    public static class ExpressionsHelper
     {
         public static string GetPropertyName<T>(Expression<Func<T, object>> expression)
         {
