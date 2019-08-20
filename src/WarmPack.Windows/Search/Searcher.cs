@@ -30,6 +30,22 @@ namespace WarmPack.Windows.Search
         Right = TextAlignment.Right
     }
 
+    public enum SearcherHorizontalContentAligment
+    {
+        Center = HorizontalAlignment.Center,
+        Left = HorizontalAlignment.Left,
+        Right = HorizontalAlignment.Right,
+        Stretch = HorizontalAlignment.Stretch
+    }
+
+    public enum SearcherVerticarContentAligment
+    {
+        Center = VerticalAlignment.Center,
+        Top = VerticalAlignment.Top,
+        Bottom = VerticalAlignment.Bottom,
+        Stretch = HorizontalAlignment.Stretch
+    }
+
     public enum SearchMode
     {
         OnPressEnter,
@@ -291,6 +307,27 @@ namespace WarmPack.Windows.Search
                 var style = new Style();
                 style.Setters.Add(new Setter(System.Windows.Controls.TextBlock.TextAlignmentProperty, (TextAlignment)col.TextAlignment));
 
+                var headerStyle = new Style(typeof(System.Windows.Controls.Primitives.DataGridColumnHeader));
+
+                var hAligment = new HorizontalAlignment();                
+                switch (col.TextAlignment)
+                {
+                    case SearcherTextAlignment.Left:
+                        hAligment = HorizontalAlignment.Left;
+                        break;
+                    case SearcherTextAlignment.Right:
+                        hAligment = HorizontalAlignment.Right;
+                        break;
+                    case SearcherTextAlignment.Center:
+                        hAligment = HorizontalAlignment.Center;
+                        break;
+                    case SearcherTextAlignment.Justify:
+                        hAligment = HorizontalAlignment.Stretch;
+                        break;                    
+                }                
+
+                headerStyle.Setters.Add(new Setter(System.Windows.Controls.Control.HorizontalContentAlignmentProperty, hAligment));
+
                 var datagridCol = new System.Windows.Controls.DataGridTextColumn()
                 {
                     Header = col.HeaderName,
@@ -299,7 +336,7 @@ namespace WarmPack.Windows.Search
                 };
                 datagridCol.Binding.StringFormat = col.StringFormat;
                 datagridCol.CellStyle = style;
-
+                datagridCol.HeaderStyle = headerStyle;
 
                 if (index == (_DataGridColumnsNamesBinding.Count - 1))
                     datagridCol.Width = new System.Windows.Controls.DataGridLength(100, System.Windows.Controls.DataGridLengthUnitType.Star);

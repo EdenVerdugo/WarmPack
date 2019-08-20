@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WarmPack.Windows.Search"
-        mc:Ignorable="d"
+        mc:Ignorable="d"        
         Title="SearcherView" 
         Height="500" 
         Width="800"
@@ -66,6 +66,10 @@
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
                                     Color="#9AFF6A"/>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                    Color="#333"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" 
+                                     Color="#9AFF6A"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" 
                                     Color="#333"/>
                 </DataGrid.Resources>
             </DataGrid>

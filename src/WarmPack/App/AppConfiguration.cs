@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using WarmPack.Classes;
@@ -41,14 +37,19 @@ namespace WarmPack.App
 
         public string Path { get; set; }
 
+        private string GetDefaultPath()
+        {
+            return string.Format(@"C:\Configuration\{0}.xml", Globals.ApplicationName == null ? "asp_config" : Globals.ApplicationName);
+        }
+
         /// <summary>
         /// Crea un archivo de configuración para la aplicación.
         /// </summary>
         public AppConfiguration()
         {
-            var path = string.Format(@"C:\Configuration\{0}.xml", Globals.ApplicationName == null ? "asp_config" : Globals.ApplicationName);
+            var path = GetDefaultPath();
 
-            this.Initialice(path, DEFAULT_USER_KEY);
+            this.Initialice(path, new Encrypter(DEFAULT_USER_KEY));
         }
         /// <summary>
         /// Crea un archivo de configuración para la aplicación.
@@ -56,19 +57,26 @@ namespace WarmPack.App
         /// <param name="path">Ruta donde se creará el archivo de configuración.</param>
         public AppConfiguration(string path)
         {
-            this.Initialice(path, DEFAULT_USER_KEY);
+            this.Initialice(path, new Encrypter(DEFAULT_USER_KEY));
         }
         /// <summary>
         /// Crea un archivo de configuración para la aplicación.
         /// </summary>
         /// <param name="path">Ruta donde se creará el archivo de configuración.</param>
         /// <param name="userKey">Semilla de encriptación para el archivo de configuración.</param>
-        public AppConfiguration(string path, string userKey)
+        public AppConfiguration(string path, Encrypter encrypter)
         {
-            this.Initialice(path, userKey);
+            this.Initialice(path, encrypter);
         }
 
-        private void Initialice(string path, string userKey)
+        public AppConfiguration(Encrypter encrypter)
+        {
+            var path = GetDefaultPath();
+
+            this.Initialice(path, encrypter);                                    
+        }
+
+        private void Initialice(string path, Encrypter encrypter)
         {
             this.Path = path;
 
@@ -92,7 +100,7 @@ namespace WarmPack.App
                 config.Save(Path);
             }
 
-            _encrypter = new Encrypter(userKey);
+            _encrypter = encrypter;
 
             _xml = new XmlDocument();
             _xml.Load(Path);
@@ -229,6 +237,11 @@ namespace WarmPack.App
 
             return result;
         }
+
+        public string ConnectionString(string name, bool decrypt)
+        {
+            return ConnectionString(name, decrypt, false, "");
+        }
         /// <summary>
         /// Obtiene la cadena de conexion.
         /// </summary>
@@ -271,7 +284,7 @@ namespace WarmPack.App
                     }
                     else
                     {
-                        parametro.SetAttribute(CONF_ConnectionString_Value, _encrypter.Encrypt(DEFAULT_CONNECTIONSTRING));
+                        parametro.SetAttribute(CONF_ConnectionString_Value, decrypt ? _encrypter.Encrypt(DEFAULT_CONNECTIONSTRING) : DEFAULT_CONNECTIONSTRING);
                     }
 
                     _xml.DocumentElement.GetElementsByTagName(CONF_Connections)[0].AppendChild(parametro);
@@ -289,5 +302,37 @@ namespace WarmPack.App
 
             return result;
         }
+
+        public void Create(AppConfigurationType type, string name, string value, bool encrypt)
+        {
+            if(type == AppConfigurationType.Parameter)
+            {
+                XmlElement parametro = _xml.CreateElement(CONF_Parameter);
+
+                parametro.SetAttribute(CONF_Parameter_Name, name);
+                parametro.SetAttribute(CONF_Parameter_Value, encrypt ? _encrypter.Encrypt(value) : value);
+
+                _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].AppendChild(parametro);
+
+                _xml.Save(this.Path);
+            }
+            else
+            {
+                XmlElement parametro = _xml.CreateElement(CONF_ConnectionString);
+
+                parametro.SetAttribute(CONF_ConnectionString_Name, name);
+                parametro.SetAttribute(CONF_ConnectionString_Value, encrypt ? _encrypter.Encrypt(value) : value);
+
+                _xml.DocumentElement.GetElementsByTagName(CONF_Connections)[0].AppendChild(parametro);
+
+                _xml.Save(Path);
+            }
+        }
+    }
+
+    public enum AppConfigurationType
+    {
+        Parameter,
+        ConexionString
     }
 }
