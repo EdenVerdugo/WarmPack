@@ -12,7 +12,7 @@ namespace WarmPack.Classes
         object _value { get; set; }
 
         public int ToInt32()
-        {
+        {            
             if (!int.TryParse(_value.ToString(), out int resultado))
             {
                 throw ThrownException(resultado.GetType());
@@ -21,7 +21,9 @@ namespace WarmPack.Classes
         }
 
         public int TryInt32(Func<Castable,int> onError)
-        {            
+        {
+            if (_value == null) return onError(this);
+
             if (!int.TryParse(_value.ToString(), out int resultado))
             {
                 resultado = onError(this);                
@@ -41,6 +43,8 @@ namespace WarmPack.Classes
 
         public uint TryUint32(Func<Castable, uint> onError)
         {
+            if (_value == null) return onError(this);
+
             if (!uint.TryParse(_value.ToString(), out uint resultado))
             {
                 resultado = onError(this);
@@ -60,6 +64,8 @@ namespace WarmPack.Classes
 
         public decimal TryDecimal(Func<Castable, decimal> onError)
         {
+            if (_value == null) return onError(this);
+
             if (!decimal.TryParse(_value.ToString(), out decimal resultado))
             {
                 resultado = onError(this);
@@ -79,6 +85,8 @@ namespace WarmPack.Classes
 
         public float TrySingle(Func<Castable, float> onError)
         {
+            if (_value == null) return onError(this);
+
             if (!float.TryParse(_value.ToString(), out float resultado))
             {
                 resultado = onError(this);
@@ -97,6 +105,8 @@ namespace WarmPack.Classes
 
         public double TryDouble(Func<Castable, double> onError)
         {
+            if (_value == null) return onError(this);
+
             if (!double.TryParse(_value.ToString(), out double resultado))
             {
                 resultado = onError(this);
@@ -115,6 +125,8 @@ namespace WarmPack.Classes
 
         public long TryInt64(Func<Castable, long> onError)
         {
+            if (_value == null) return onError(this);
+
             if (!long.TryParse(_value.ToString(), out long resultado))
             {
                 resultado = onError(this);
@@ -133,6 +145,8 @@ namespace WarmPack.Classes
 
         public ulong TryUInt64(Func<Castable, ulong> onError)
         {
+            if (_value == null) return onError(this);
+
             if (!ulong.TryParse(_value.ToString(), out ulong resultado))
             {
                 resultado = onError(this);
@@ -147,7 +161,9 @@ namespace WarmPack.Classes
 
         public bool TryBoolean(Func<Castable, bool> onError)
         {
-            if(bool.TryParse(_value.ToString(), out bool resultado))
+            if (_value == null) return onError(this);
+
+            if (bool.TryParse(_value.ToString(), out bool resultado))
             {
                 resultado = onError(this);
             }
@@ -165,7 +181,9 @@ namespace WarmPack.Classes
         }
 
         public byte TryByte(Func<Castable, byte> onError)
-        {            
+        {
+            if (_value == null) return onError(this);
+
             if (!byte.TryParse(_value.ToString(), out byte resultado))
             {
                 resultado = onError(this);
@@ -183,6 +201,8 @@ namespace WarmPack.Classes
 
         public byte[] TryBytes(Func<Castable, byte[]> onError)
         {
+            if (_value == null) return onError(this);
+
             try
             {
                 byte[] resultado = (byte[])_value;
@@ -211,6 +231,8 @@ namespace WarmPack.Classes
 
         public DateTime TryDateTime(Func<Castable, DateTime> onError)
         {
+            if (_value == null) return onError(this);
+
             if (!DateTime.TryParse(_value.ToString(), out DateTime resultado))
             {
                 resultado = onError(this);
@@ -221,6 +243,16 @@ namespace WarmPack.Classes
         public override string ToString()
         {
             return _value != null ? _value.ToString() : "";
+        }
+
+        public string TryString(Func<Castable, string> onError)
+        {
+            if(_value == null)
+            {
+                return onError(this);
+            }            
+
+            return _value.ToString();           
         }
 
         private Exception ThrownException(Type tipo)

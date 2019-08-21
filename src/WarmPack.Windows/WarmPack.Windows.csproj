@@ -67,6 +67,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App\AppConfigurationExtensions.cs" />
     <Compile Include="Controls\ComboBoxEx.cs" />
     <Compile Include="Controls\CommandParameterOnKeyEnter.cs" />
     <Compile Include="Controls\ControlEx.cs" />

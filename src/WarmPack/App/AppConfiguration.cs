@@ -73,7 +73,7 @@ namespace WarmPack.App
         {
             var path = GetDefaultPath();
 
-            this.Initialice(path, encrypter);                                    
+            this.Initialice(path, encrypter);
         }
 
         private void Initialice(string path, Encrypter encrypter)
@@ -191,6 +191,7 @@ namespace WarmPack.App
         /// </summary>
         /// <param name="name">Nombre del parametro.</param>
         /// <param name="value">Valor del parametro.</param>
+        [Obsolete("ParameterSetValue is deprecated, please use Update instead")]
         public void ParameterSetValue(string name, string value)
         {
             Boolean finded = false;
@@ -305,7 +306,7 @@ namespace WarmPack.App
 
         public void Create(AppConfigurationType type, string name, string value, bool encrypt)
         {
-            if(type == AppConfigurationType.Parameter)
+            if (type == AppConfigurationType.Parameter)
             {
                 XmlElement parametro = _xml.CreateElement(CONF_Parameter);
 
@@ -328,6 +329,113 @@ namespace WarmPack.App
                 _xml.Save(Path);
             }
         }
+
+        public void Update(AppConfigurationType type, string name, string value, bool encrypt)
+        {
+            bool finded = false;
+
+            if (type == AppConfigurationType.Parameter)
+            {                
+                var nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].SelectNodes(CONF_Parameter);
+
+                foreach (XmlNode nod in nodes)
+                {
+                    if (nod.Attributes[CONF_Parameter_Name].Value == name)
+                    {
+                        nod.Attributes[CONF_Parameter_Value].Value = value;
+                        finded = true;
+                    }
+                }
+
+                if (!finded)
+                {
+                    throw new Exception($"the parameter {name} was not found");
+                }
+
+                _xml.Save(this.Path);
+            }
+            else
+            {                
+                var nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Connections)[0].SelectNodes(CONF_ConnectionString);
+
+                foreach (XmlNode nod in nodes)
+                {
+                    if (nod.Attributes[CONF_ConnectionString_Name].Value == name)
+                    {
+                        nod.Attributes[CONF_ConnectionString_Value].Value = value;
+                        finded = true;
+                    }
+                }
+
+                if (!finded)
+                {
+                    throw new Exception($"the parameter {name} was not found");
+                }
+
+                _xml.Save(this.Path);
+            }
+        }
+
+
+        public Castable TryParameter(String name, bool decrypt, Func<Castable> onError)
+        {
+            String result = null;
+
+            XmlNodeList nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].SelectNodes(CONF_Parameter);
+            Boolean finded = false;
+            foreach (XmlNode nod in nodes)
+            {
+                if (nod.Attributes[CONF_Parameter_Name].Value == name)
+                {
+                    result = nod.Attributes[CONF_Parameter_Value].Value;
+                    result = decrypt ? _encrypter.Decrypt(result) : result;
+
+                    finded = true;
+                    break;
+                }
+            }
+
+            if (!finded)
+            {
+                return onError();
+            }
+
+            return new Castable(result);
+        }
+
+        public string TryConnectionString(string name, bool decrypt, Func<string> onError)
+        {
+            string result = null;
+
+            if (_xml.DocumentElement.GetElementsByTagName(CONF_Connections).Count == 0)
+            {
+                var con = _xml.CreateElement(CONF_Connections);
+                _xml.DocumentElement.AppendChild(con);
+            }
+
+            var nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Connections)[0].SelectNodes(CONF_ConnectionString);
+            bool finded = false;
+            foreach (XmlNode nod in nodes)
+            {
+                if (nod.Attributes[CONF_ConnectionString_Name].Value == name)
+                {
+                    result = nod.Attributes[CONF_ConnectionString_Value].Value;
+                    finded = true;
+                }
+            }
+
+            if (!finded)
+            {
+                return onError();
+            }
+
+            if (decrypt)
+            {
+                result = _encrypter.Decrypt(result);
+            }
+
+            return result;
+        }        
     }
 
     public enum AppConfigurationType
