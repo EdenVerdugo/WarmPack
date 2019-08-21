@@ -20,12 +20,32 @@ namespace WarmPack.Classes
             return resultado;
         }
 
+        public int TryInt32(Func<Castable,int> onError)
+        {            
+            if (!int.TryParse(_value.ToString(), out int resultado))
+            {
+                resultado = onError(this);                
+            }
+
+            return resultado;
+        }
+
         public uint ToUint32()
         {
             if (!uint.TryParse(_value.ToString(), out uint resultado))
             {
                 throw ThrownException(resultado.GetType());
             }
+            return resultado;
+        }
+
+        public uint TryUint32(Func<Castable, uint> onError)
+        {
+            if (!uint.TryParse(_value.ToString(), out uint resultado))
+            {
+                resultado = onError(this);
+            }
+
             return resultado;
         }
 
@@ -38,11 +58,30 @@ namespace WarmPack.Classes
             return resultado;
         }
 
+        public decimal TryDecimal(Func<Castable, decimal> onError)
+        {
+            if (!decimal.TryParse(_value.ToString(), out decimal resultado))
+            {
+                resultado = onError(this);
+            }
+
+            return resultado;
+        }
+
         public float ToSingle()
         {
             if (!float.TryParse(_value.ToString(), out float resultado))
             {
                 throw ThrownException(resultado.GetType());
+            }
+            return resultado;
+        }
+
+        public float TrySingle(Func<Castable, float> onError)
+        {
+            if (!float.TryParse(_value.ToString(), out float resultado))
+            {
+                resultado = onError(this);
             }
             return resultado;
         }
@@ -56,11 +95,29 @@ namespace WarmPack.Classes
             return resultado;
         }
 
+        public double TryDouble(Func<Castable, double> onError)
+        {
+            if (!double.TryParse(_value.ToString(), out double resultado))
+            {
+                resultado = onError(this);
+            }
+            return resultado;
+        }
+
         public long ToInt64()
         {
             if (!long.TryParse(_value.ToString(), out long resultado))
             {
                 throw ThrownException(resultado.GetType());
+            }
+            return resultado;
+        }
+
+        public long TryInt64(Func<Castable, long> onError)
+        {
+            if (!long.TryParse(_value.ToString(), out long resultado))
+            {
+                resultado = onError(this);
             }
             return resultado;
         }
@@ -74,9 +131,28 @@ namespace WarmPack.Classes
             return resultado;
         }
 
+        public ulong TryUInt64(Func<Castable, ulong> onError)
+        {
+            if (!ulong.TryParse(_value.ToString(), out ulong resultado))
+            {
+                resultado = onError(this);
+            }
+            return resultado;
+        }
+
         public bool ToBoolean()
         {
             return Convert.ToBoolean(_value.ToString());
+        }
+
+        public bool TryBoolean(Func<Castable, bool> onError)
+        {
+            if(bool.TryParse(_value.ToString(), out bool resultado))
+            {
+                resultado = onError(this);
+            }
+
+            return resultado;
         }
 
         public byte ToByte()
@@ -87,6 +163,17 @@ namespace WarmPack.Classes
             }
             return resultado;
         }
+
+        public byte TryByte(Func<Castable, byte> onError)
+        {            
+            if (!byte.TryParse(_value.ToString(), out byte resultado))
+            {
+                resultado = onError(this);
+            }
+
+            return resultado;
+        }
+
         public byte[] ToBytes()
         {
             byte[] resultado = (byte[])_value;
@@ -94,11 +181,39 @@ namespace WarmPack.Classes
             return resultado;
         }
 
+        public byte[] TryBytes(Func<Castable, byte[]> onError)
+        {
+            try
+            {
+                byte[] resultado = (byte[])_value;
+
+                if(resultado == null)
+                {
+                    onError(this);
+                }
+
+                return resultado;
+            }
+            catch
+            {
+                return onError(this);                
+            }   
+        }
+
         public DateTime ToDateTime()
         {
             if (!DateTime.TryParse(_value.ToString(), out DateTime resultado))
             {
                 ThrownException(resultado.GetType());
+            }
+            return resultado;
+        }
+
+        public DateTime TryDateTime(Func<Castable, DateTime> onError)
+        {
+            if (!DateTime.TryParse(_value.ToString(), out DateTime resultado))
+            {
+                resultado = onError(this);
             }
             return resultado;
         }

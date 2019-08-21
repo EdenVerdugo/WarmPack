@@ -152,6 +152,21 @@ namespace WarmPack.Windows.Search
 
         SearcherView _View = null;
 
+        private Window _Owner;
+        public Window Owner
+        {
+            get
+            {
+                return _Owner;
+            }
+            set
+            {
+                _Owner = value;
+
+                OnPropertyChanged(p => p.Owner);
+            }
+        }
+
         public Searcher(Func<string, IEnumerable<T>> searchFunction)
         {
             _SearchAction = searchFunction;
@@ -297,7 +312,10 @@ namespace WarmPack.Windows.Search
             _firstShow = true;
 
             _View = new SearcherView();
+            _View.Owner = Owner;
             _View.DataContext = this;
+            _View.Topmost = true;
+
             SetKeyBindings();
 
             int index = 0;
