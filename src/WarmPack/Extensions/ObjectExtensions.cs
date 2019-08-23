@@ -16,9 +16,9 @@ namespace WarmPack.Extensions
             return obj as List<T>;
         }
 
-        public static T To<T>(this object obj)
+        public static T To<T>(this object obj) where T : IConvertible
         {
-            return (T)obj;
+            return (T)Convert.ChangeType(obj, typeof(T));
         }
 
         /// <summary>

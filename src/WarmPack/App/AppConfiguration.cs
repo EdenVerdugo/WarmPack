@@ -304,7 +304,7 @@ namespace WarmPack.App
             return result;
         }
 
-        public void Create(AppConfigurationType type, string name, string value, bool encrypt)
+        public void Create(AppConfigurationType type, string name, string value, bool encrypt, string comment = null)
         {
             if (type == AppConfigurationType.Parameter)
             {
@@ -312,8 +312,13 @@ namespace WarmPack.App
 
                 parametro.SetAttribute(CONF_Parameter_Name, name);
                 parametro.SetAttribute(CONF_Parameter_Value, encrypt ? _encrypter.Encrypt(value) : value);
-
+                
                 _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].AppendChild(parametro);
+
+                if(comment != null)
+                {
+                    _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].InsertBefore(_xml.CreateComment(comment), parametro);                    
+                }                
 
                 _xml.Save(this.Path);
             }
@@ -326,11 +331,16 @@ namespace WarmPack.App
 
                 _xml.DocumentElement.GetElementsByTagName(CONF_Connections)[0].AppendChild(parametro);
 
+                if (comment != null)
+                {                    
+                    _xml.DocumentElement.GetElementsByTagName(CONF_Connections)[0].InsertBefore(_xml.CreateComment(comment), parametro);
+                }
+
                 _xml.Save(Path);
             }
         }
 
-        public void Update(AppConfigurationType type, string name, string value, bool encrypt)
+        public void Update(AppConfigurationType type, string name, string value, bool encrypt, string comment = null)
         {
             bool finded = false;
 
@@ -343,7 +353,24 @@ namespace WarmPack.App
                     if (nod.Attributes[CONF_Parameter_Name].Value == name)
                     {
                         nod.Attributes[CONF_Parameter_Value].Value = value;
+
                         finded = true;
+
+                        if (comment != null)
+                        {
+                            XmlComment prevComment = (XmlComment)nod.PreviousSibling;
+
+                            if(prevComment == null)
+                            {
+                                _xml.InsertBefore(_xml.CreateComment(comment), nod);
+                            }                                
+                            else
+                            {
+                                prevComment.Value = comment;                                
+                            }
+                        }
+
+                        break;
                     }
                 }
 
@@ -351,7 +378,7 @@ namespace WarmPack.App
                 {
                     throw new Exception($"the parameter {name} was not found");
                 }
-
+                                
                 _xml.Save(this.Path);
             }
             else
@@ -363,7 +390,15 @@ namespace WarmPack.App
                     if (nod.Attributes[CONF_ConnectionString_Name].Value == name)
                     {
                         nod.Attributes[CONF_ConnectionString_Value].Value = value;
+
                         finded = true;
+
+                        if (comment != null)
+                        {
+                            _xml.InsertBefore(_xml.CreateComment(comment), nod);
+                        }
+
+                        break;
                     }
                 }
 
@@ -377,7 +412,7 @@ namespace WarmPack.App
         }
 
 
-        public Castable TryParameter(String name, bool decrypt, Func<Castable> onError)
+        public Castable TryParameter(String name, bool decrypt, Func<Castable> onError, string comment = null)
         {
             String result = null;
 
@@ -397,13 +432,50 @@ namespace WarmPack.App
 
             if (!finded)
             {
-                return onError();
+                var value = onError();
+
+                if (value != null)
+                    Create(AppConfigurationType.Parameter, name, value.ToString(), decrypt, comment);
+                else
+                    value = new Castable("");
+
+                return value;
             }
 
             return new Castable(result);
         }
 
-        public string TryConnectionString(string name, bool decrypt, Func<string> onError)
+        public T TryParameter<T>(String name, bool decrypt, Func<T> onError, string comment = null) where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
+        {
+            string result = null;
+
+            XmlNodeList nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].SelectNodes(CONF_Parameter);
+            Boolean finded = false;
+            foreach (XmlNode nod in nodes)
+            {
+                if (nod.Attributes[CONF_Parameter_Name].Value == name)
+                {
+                    result = nod.Attributes[CONF_Parameter_Value].Value;
+                    result = decrypt ? _encrypter.Decrypt(result) : result;
+
+                    finded = true;
+                    break;
+                }
+            }
+
+            if (!finded)
+            {
+                var value = onError();
+                
+                Create(AppConfigurationType.Parameter, name, value.ToString(), decrypt, comment);
+
+                return value;
+            }
+
+            return (T)Convert.ChangeType(result, typeof(T));
+        }
+
+        public string TryConnectionString(string name, bool decrypt, Func<string> onError, string comment = null)
         {
             string result = null;
 
@@ -426,7 +498,12 @@ namespace WarmPack.App
 
             if (!finded)
             {
-                return onError();
+                var value = onError();
+
+                if (value != null)
+                    Create(AppConfigurationType.ConexionString, name, value, decrypt, comment);
+
+                return value;
             }
 
             if (decrypt)

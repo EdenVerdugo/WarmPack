@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WarmPack.Data;
 using WarmPack.Windows.Controls;
 using WarmPack.Windows.ViewModels;
 
@@ -53,6 +54,7 @@ namespace WarmPack.Windows
         public static MessageResult Show(System.Windows.Window owner, string messageBoxText, string caption, MessageButton button, MessageStyle style, MessageOptions options)
         {
             var vm = new MessageViewModel();
+
             var view = new Views.MessageBoxView();
             view.DataContext = vm;
 
@@ -170,6 +172,41 @@ namespace WarmPack.Windows
         //{
         //    return ShowWithOptions<T>(null, messageBoxText, string.Empty, MessageStyle.Primary, dataSource, MessageWithOptionControlStyle.RadioButtonsList);
         //}
+
+        public static MessageResult ShowDatabaseConnection(Func<ConnectionString, bool> action)
+        {
+            var vm = new MessageDatabaseConnectionStringViewModel();
+            var view = new Views.MessageBoxDatabaseConnectionStringView();
+            view.DataContext = vm;
+
+            view.ShowDialog();
+
+            if(vm.MessageResult == MessageResult.OK)
+            {                
+                if(!action(new ConnectionString(vm.DataSource, vm.Database, vm.UserId, vm.Password)))
+                {
+                    vm.MessageResult = MessageResult.Cancel;                    
+                }
+            }
+
+            return vm.MessageResult;
+        }
+
+        public static ConnectionString ShowDatabaseConnection()
+        {
+            var vm = new MessageDatabaseConnectionStringViewModel();
+            var view = new Views.MessageBoxDatabaseConnectionStringView();
+            view.DataContext = vm;
+
+            view.ShowDialog();
+
+            if (vm.MessageResult == MessageResult.OK)
+            {
+                return new ConnectionString(vm.DataSource, vm.Database, vm.UserId, vm.Password);
+            }
+
+            return null;
+        }
     }
 
 

@@ -23,15 +23,15 @@ namespace WarmPack.Threading
             return RunTask(doWork, false);
         }
 
-        internal static TaskDoMonitor RunTask(Action doWork, bool useSplash)
+        internal static TaskDoMonitor RunTask(Action doWork, bool useSplash, string message = null)
         {
             UnHandledException = null;
 
-            BackgroundWorker worker = new BackgroundWorker();
+            BackgroundWorker worker = new BackgroundWorker();            
 
             if (useSplash)
-                Splash.Show();
-
+                Splash.Show(message);
+                        
             worker.DoWork += new DoWorkEventHandler((o, e) =>
             {
                 try
@@ -136,8 +136,22 @@ namespace WarmPack.Threading
 
 
                             if (UnHandledException == null || (UnHandledException?.ContinueOnException == true))
+                            {
                                 completed.Invoke();
 
+                                /*
+                                var thread = new System.Threading.Thread(() =>
+                                {
+                                    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(()=>
+                                    {
+                                        
+                                    }));                                    
+                                });
+
+                                thread.SetApartmentState(System.Threading.ApartmentState.STA);
+                                thread.Start();  
+                                */
+                            }
                         });
 
                     _worker.RunWorkerAsync();

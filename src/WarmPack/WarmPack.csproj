@@ -72,6 +72,7 @@
     <Compile Include="Classes\Result.cs" />
     <Compile Include="Classes\ResultList.cs" />
     <Compile Include="DataModel\ONotifyPropertyChanged.cs" />
+    <Compile Include="Data\ConnectionString.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Extensions\DataTableExtensions.cs" />
     <Compile Include="Extensions\DecimalExtensions.cs" />

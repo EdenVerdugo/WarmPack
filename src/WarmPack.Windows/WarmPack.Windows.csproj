@@ -90,9 +90,13 @@
     <Compile Include="Search\SearcherView.xaml.cs">
       <DependentUpon>SearcherView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\MessageDatabaseConnectionStringViewModel.cs" />
     <Compile Include="ViewModels\MessageInputViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\MessageWithOptionsViewModel.cs" />
+    <Compile Include="Views\MessageBoxDatabaseConnectionStringView.xaml.cs">
+      <DependentUpon>MessageBoxDatabaseConnectionStringView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MessageBoxInputView.xaml.cs">
       <DependentUpon>MessageBoxInputView.xaml</DependentUpon>
     </Compile>
@@ -112,6 +116,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Search\SearcherView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MessageBoxDatabaseConnectionStringView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

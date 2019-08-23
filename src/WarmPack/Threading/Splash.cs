@@ -15,6 +15,7 @@ namespace WarmPack.Threading
     {
         private static Window _splashWiew = null;
         private static bool _splasVisible = false;
+        private static string _splashMessage = "Espere un momento por favor ...";
 
         private static Window View
         {
@@ -100,7 +101,7 @@ namespace WarmPack.Threading
 
             TextBlock messageText = new TextBlock()
             {
-                Text = "Espere un momento por favor...",
+                Text = _splashMessage,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = 18,
@@ -116,9 +117,19 @@ namespace WarmPack.Threading
             _splashWiew.Content = grid;
         }
 
-        public static void Show()
+        public static void Show(string message = null)
         {
             _splasVisible = true;
+
+            if(message == null)
+            {
+                _splashMessage = "Espere un momento por favor ...";
+            }
+            else
+            {
+                _splashMessage = message;
+            }
+
 
             Thread newWindowThread = new Thread(new ThreadStart(ThreadStartingPoint));
             newWindowThread.SetApartmentState(ApartmentState.STA);
@@ -146,6 +157,11 @@ namespace WarmPack.Threading
 
         public static void Hide()
         {
+            _splashWiew.Dispatcher.UnhandledException += (e, o) =>
+            {
+
+            };
+
             try
             {
                 if (_splasVisible)
@@ -163,14 +179,13 @@ namespace WarmPack.Threading
             }
             catch
             {
-                _splashWiew.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(_splashWiew.Close));
+                _splashWiew.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(_splashWiew.Close));                
             }
-
         }
 
-        public static Task.TaskDoMonitor RunTask(Action action)
+        public static Task.TaskDoMonitor RunTask(Action action, string message = null)
         {
-            return Task.RunTask(action, true);
+            return Task.RunTask(action, true, message);
         }
     }
 }

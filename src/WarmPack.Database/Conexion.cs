@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using WarmPack.Classes;
+using WarmPack.Data;
 using WarmPack.Database.Helpers;
 
 namespace WarmPack.Database
@@ -97,6 +98,11 @@ namespace WarmPack.Database
         public Conexion(ConexionType conexionType, string connectionString)
         {
             ConexionInit(conexionType, connectionString);
+        }
+
+        public Conexion(ConexionType conexionType, ConnectionString connectionString)
+        {
+            ConexionInit(conexionType, this.ConnectionString(conexionType, connectionString.Server, connectionString.Database, connectionString.User, connectionString.Password));
         }
 
         public void TransactionBegin()
@@ -910,6 +916,17 @@ namespace WarmPack.Database
             return lst;
         }
 
+        public bool Test()
+        {
+            try
+            {
+                return ExecuteScalar("SELECT 1").ToInt32() == 1;
+            }
+            catch
+            {
+                return false;
+            }            
+        }
 
     }
 }
