@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Windows", "WarmPac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Test", "WarmPack.Test\WarmPack.Test.csproj", "{6888C68A-268F-46DE-9264-DB8BD395AED6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Bash", "WarmPack.Bash\WarmPack.Bash.csproj", "{BADA367B-5C1C-4A56-ABA2-0261C986A23D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,14 @@ Global
 		{6888C68A-268F-46DE-9264-DB8BD395AED6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6888C68A-268F-46DE-9264-DB8BD395AED6}.Release|x86.ActiveCfg = Release|Any CPU
 		{6888C68A-268F-46DE-9264-DB8BD395AED6}.Release|x86.Build.0 = Release|Any CPU
+		{BADA367B-5C1C-4A56-ABA2-0261C986A23D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BADA367B-5C1C-4A56-ABA2-0261C986A23D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BADA367B-5C1C-4A56-ABA2-0261C986A23D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BADA367B-5C1C-4A56-ABA2-0261C986A23D}.Debug|x86.Build.0 = Debug|Any CPU
+		{BADA367B-5C1C-4A56-ABA2-0261C986A23D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BADA367B-5C1C-4A56-ABA2-0261C986A23D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BADA367B-5C1C-4A56-ABA2-0261C986A23D}.Release|x86.ActiveCfg = Release|Any CPU
+		{BADA367B-5C1C-4A56-ABA2-0261C986A23D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

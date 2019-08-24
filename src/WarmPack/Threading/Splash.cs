@@ -157,11 +157,6 @@ namespace WarmPack.Threading
 
         public static void Hide()
         {
-            _splashWiew.Dispatcher.UnhandledException += (e, o) =>
-            {
-
-            };
-
             try
             {
                 if (_splasVisible)
@@ -179,6 +174,11 @@ namespace WarmPack.Threading
             }
             catch
             {
+                while(_splashWiew == null)
+                {
+                    Thread.Sleep(100);
+                }
+
                 _splashWiew.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(_splashWiew.Close));                
             }
         }
