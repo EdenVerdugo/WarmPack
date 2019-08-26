@@ -81,6 +81,7 @@ namespace WarmPack.Windows.App
         internal string _comment;
         internal Action<Castable> _action;
         internal bool _creationModal;
+        internal object _defaultValue;
 
         public AppConfigurationParameterOptions(AppConfigurationParameterOptions options)
         {            
@@ -95,30 +96,52 @@ namespace WarmPack.Windows.App
             _decrypt = decrypt;
         }
 
-        public AppConfigurationOptionsRequest RequestIfNotFound(string message = null, TextBoxExInputType typeInput = TextBoxExInputType.Text)
+        public AppConfigurationParameterOptionsRequest RequestIfNotFound(string message = null, TextBoxExInputType typeInput = TextBoxExInputType.Text)
         {
             _creationModal = true;
             _message = message;
             _typeInput = typeInput;
 
-            return new AppConfigurationOptionsRequest(this);
+            return new AppConfigurationParameterOptionsRequest(this);
         }        
+
+        public AppConfigurationParameterOptions DefaultValue(object defaultValue)
+        {
+            _defaultValue = defaultValue;
+
+            return this;
+        }
 
         public AppConfigurationParameterOptions Comment(string comment)
         {
             _comment = comment;
             return this;
         }
-
+        
         public Castable Value()
         {
-            return _app.TryParameter(_name, _decrypt, _creationModal, _typeInput, _message, _action, _comment);
+            if (_creationModal)
+            {
+                return _app.TryParameter(_name, _decrypt, _creationModal, _typeInput, _message, _action, _comment);
+            }
+
+            else
+            {
+                var param = _app.TryParameter(_name, _decrypt, () => new Castable(_defaultValue), _comment);
+
+                if (param != null && _action != null)
+                {
+                    _action(param);
+                }
+
+                return param;
+            }                
         }
     }
 
-    public class AppConfigurationOptionsRequest : AppConfigurationParameterOptions 
+    public class AppConfigurationParameterOptionsRequest : AppConfigurationParameterOptions 
     {
-        public AppConfigurationOptionsRequest(AppConfigurationParameterOptions options) : base(options)
+        public AppConfigurationParameterOptionsRequest(AppConfigurationParameterOptions options) : base(options)
         {
             _instance = options;            
         }
