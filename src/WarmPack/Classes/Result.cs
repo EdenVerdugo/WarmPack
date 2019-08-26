@@ -1,4 +1,6 @@
-﻿namespace WarmPack.Classes
+﻿using System;
+
+namespace WarmPack.Classes
 {
     public class Result
     {
@@ -22,6 +24,27 @@
             this.Value = value;
             this.Message = msg;
             this.Data = data;
+        }
+
+        public Result(Exception ex)
+        {
+            this.Value = false;
+            this.Message = ex.Message;            
+        }
+
+        public static Result Create(bool value, string msg)
+        {
+            return new Result(value, msg);
+        }
+
+        public static Result Create(bool value, string msg, object data)
+        {
+            return new Result(value, msg, data);
+        }
+
+        public static Result Create(Exception ex)
+        {
+            return new Result(ex);
         }
     }
 
@@ -47,6 +70,27 @@
             this.Value = value;
             this.Message = msg;
             this.Data = data;
+        }
+
+        public Result(Exception ex)
+        {
+            this.Value = false;
+            this.Message = ex.Message;
+        }
+
+        public static Result Create(bool value, string msg)
+        {
+            return new Result(value, msg);
+        }
+
+        public static Result Create(bool value, string msg, T data)
+        {
+            return new Result(value, msg, data);
+        }
+
+        public static Result Create(Exception ex)
+        {
+            return new Result(ex);
         }
     }
 }
