@@ -831,87 +831,99 @@ namespace WarmPack.Database
         private List<T> ResultsInDataReader<T>(ref IDataReader reader)
         {
             List<T> lst = new List<T>();
+            string currentColumn = null;
 
-            Type temp = typeof(T);
-
-            while (reader.Read())
+            try
             {
-                //crear la instancia del objeto 
-                T obj = default(T);
-                bool isPrimitive = true;
-                if (temp != typeof(string) && temp != typeof(int) && temp != typeof(decimal) && temp != typeof(long) && temp != typeof(bool) && temp != typeof(short) && temp != typeof(float) && temp != typeof(double) && temp != typeof(char))
+                Type temp = typeof(T);
+
+                while (reader.Read())
                 {
-                    obj = Activator.CreateInstance<T>();
-                    isPrimitive = false;
-                }
-
-
-                //buscar todos sus campos y propiedades
-                for (int i = 0; i < reader.FieldCount; i++)
-                {
-                    if (reader[i].GetType() == typeof(System.DBNull))
-                        continue;
-
-                    if (isPrimitive)
+                    //crear la instancia del objeto 
+                    T obj = default(T);
+                    bool isPrimitive = true;
+                    if (temp != typeof(string) && temp != typeof(int) && temp != typeof(decimal) && temp != typeof(long) && temp != typeof(bool) && temp != typeof(short) && temp != typeof(float) && temp != typeof(double) && temp != typeof(char))
                     {
-                        obj = (T)reader[i];
-                        continue;
+                        obj = Activator.CreateInstance<T>();
+                        isPrimitive = false;
                     }
 
-                    foreach (FieldInfo pro in temp.GetFields())
+
+                    //buscar todos sus campos y propiedades
+                    for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        string name = pro.Name.ToLowerInvariant();
-                        string columnName = reader.GetName(i).ToLowerInvariant();
+                        if (reader[i].GetType() == typeof(System.DBNull))
+                            continue;
 
-                        var attributes = pro.GetCustomAttributes(true);
-
-                        foreach (var a in attributes)
+                        if (isPrimitive)
                         {
-                            if (a is ConexionColumnAttribute)
-                            {
-                                name = ((ConexionColumnAttribute)a).Name.ToLowerInvariant();
-                            }
-                        }
-                        // si se encuentra se asigna el valor encontrado
-                        // nota : esto puede causar una excepcion si el tipo de valor que se encuentra no es el mismo tipo que regresa la consulta
-                        if (name == columnName)
-                        {
-                            pro.SetValue(obj, reader[i]);
-                        }
-                        else
-                        {
+                            obj = (T)reader[i];
                             continue;
                         }
-                    }
 
-                    foreach (PropertyInfo pro in temp.GetProperties())
-                    {
-                        string propertyName = pro.Name.ToLowerInvariant();
-                        string columnName = reader.GetName(i).ToLowerInvariant();
-
-                        var attributes = pro.GetCustomAttributes(true);
-
-                        foreach (var a in attributes)
+                        foreach (FieldInfo pro in temp.GetFields())
                         {
-                            if (a is ConexionColumnAttribute)
+                            string name = pro.Name.ToLowerInvariant();
+                            string columnName = reader.GetName(i).ToLowerInvariant();
+                            currentColumn = columnName;
+
+                            var attributes = pro.GetCustomAttributes(true);
+
+                            foreach (var a in attributes)
                             {
-                                propertyName = ((ConexionColumnAttribute)a).Name.ToLowerInvariant();
+                                if (a is ConexionColumnAttribute)
+                                {
+                                    name = ((ConexionColumnAttribute)a).Name.ToLowerInvariant();
+                                }
+                            }
+                            // si se encuentra se asigna el valor encontrado
+                            // nota : esto puede causar una excepcion si el tipo de valor que se encuentra no es el mismo tipo que regresa la consulta
+                            if (name == columnName)
+                            {
+                                pro.SetValue(obj, reader[i]);
+                            }
+                            else
+                            {
+                                continue;
                             }
                         }
 
-                        if (propertyName == columnName)
+                        foreach (PropertyInfo pro in temp.GetProperties())
                         {
-                            pro.SetValue(obj, reader[i], null);
-                        }
-                        else
-                        {
-                            continue;
+                            string propertyName = pro.Name.ToLowerInvariant();
+                            string columnName = reader.GetName(i).ToLowerInvariant();
+                            currentColumn = columnName;
+
+                            var attributes = pro.GetCustomAttributes(true);
+
+                            foreach (var a in attributes)
+                            {
+                                if (a is ConexionColumnAttribute)
+                                {
+                                    propertyName = ((ConexionColumnAttribute)a).Name.ToLowerInvariant();
+                                }
+                            }
+
+                            if (propertyName == columnName)
+                            {
+                                pro.SetValue(obj, reader[i], null);
+                            }
+                            else
+                            {
+                                continue;
+                            }
                         }
                     }
-                }
 
-                lst.Add(obj);
+                    lst.Add(obj);
+                }
             }
+            catch(Exception ex)
+            {
+                throw new Exception($"Falló al serializar la columna '{currentColumn}'.\n{ex.Message}", ex);                
+            }
+
+            
 
             return lst;
         }

@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace WarmPack.Database
 {
@@ -22,7 +24,7 @@ namespace WarmPack.Database
         {
             Name = name;
             Type = (DbType)type;
-            Value = value;
+            Value = value ?? DBNull.Value;
             Size = size;
             Direction = direction;
         }
@@ -47,7 +49,7 @@ namespace WarmPack.Database
         public ConexionParameter(string name, ConexionDbType type, T value, int size = 0, ParameterDirection direction = ParameterDirection.Input)
         {
             Name = name;
-            Type = (DbType)type;
+            Type = (DbType)type;                        
             Value = value;
             Size = size;
             Direction = direction;
