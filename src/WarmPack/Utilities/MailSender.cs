@@ -43,7 +43,7 @@ namespace WarmPack.Utilities
             }
         }
 
-        public void SendWithImages(string fromEmail, string toEmail, string subject, string content, Image[] images)
+        public void SendWithImages(string fromEmail, string toEmail, string subject, string content, Image[] images, MailSenderAttachmentList files = null)
         {
             using (var msg = new MailMessage(fromEmail, toEmail, subject, content))
             {
@@ -67,6 +67,17 @@ namespace WarmPack.Utilities
 
                     i++;
                 }
+
+                if (files != null)
+                    foreach (var file in files)
+                    {
+                        var ms = new System.IO.MemoryStream(file.FileBuffer);
+                        var att = new Attachment(ms, file.Name, string.IsNullOrEmpty(file.MimeType) ? "application/octet-stream" : file.MimeType);
+
+                        msg.Attachments.Add(att);
+
+                        i++;
+                    }
 
                 _client.Send(msg);
             }

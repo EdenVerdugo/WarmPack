@@ -13,8 +13,17 @@ namespace WarmPack.Utilities
 
         public MailSenderAttachment(string path, string mimeType = "")
         {
-            Name = Path.GetFileName(path);
-            FileBuffer = File.ReadAllBytes(path);
+            if (File.Exists(path))
+            {
+                Name = Path.GetFileName(path);
+                FileBuffer = File.ReadAllBytes(path);
+            }
+            else
+            {
+                Name = "FileNotFound.txt";
+                FileBuffer = new byte[0];
+            }
+
             MimeType = mimeType;
         }
 

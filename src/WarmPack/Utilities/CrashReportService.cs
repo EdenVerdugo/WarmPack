@@ -13,6 +13,8 @@ namespace WarmPack.Utilities
 {
     public static class CrashReportService
     {
+        private static MailSenderAttachmentList _files;
+
         public static void Start()
         {
             if (AppDomain.CurrentDomain != null)
@@ -39,6 +41,17 @@ namespace WarmPack.Utilities
             Environment.Exit(0);
         }
 #endif
+
+        public static void AddMailFileOnException(MailSenderAttachment attachment)
+        {
+            if(_files == null)
+            {
+                _files = new MailSenderAttachmentList();
+            }
+
+            _files.Add(attachment);
+        }
+
         private static bool IgnoreException(Exception exception)
         {
             bool ignore = false;
@@ -113,6 +126,27 @@ namespace WarmPack.Utilities
             builder.AppendLine("<h2 style='color:#e2710d'>Detalles</h2><br>");
             builder.AppendLine($"{ Globals.ApplicationName } - { Globals.ApplicationPath }");
 
+            builder.AppendLine("<h2 style='color:#e2710d'>Equipo</h2><br>");
+            builder.AppendLine($"Nombre del equipo: <strong>{ Environment.MachineName }</strong> <br>");
+            builder.AppendLine("Direcciones ip encontradas :<br>");
+
+            builder.AppendLine("<ul>");
+            foreach(var ip in Helpers.NetworkHelper.GetLocalIPAdresses())
+            {
+                builder.AppendLine($"<li>{ip}</li>");
+            }
+            builder.AppendLine($"<li>{ Helpers.NetworkHelper.GetPublicExtternalIPAddress() }</li>");
+            builder.AppendLine("</ul>");
+
+
+            builder.AppendLine("<h2 style='color:#e2710d'>Archivos anexados al correo</h2><br>");
+            builder.AppendLine("<ul>");
+            foreach (var file in _files)
+            {
+                builder.AppendLine($"<li>{file.Name}</li>");
+            }
+            builder.AppendLine("</ul>");
+
             builder.AppendLine("</body></html>");
 
 
@@ -131,8 +165,9 @@ namespace WarmPack.Utilities
             }
 
             //var sender = new MailSender("172.19.1.4", 587, false, "correoautomatico@difarmer.com", "Difarmer01");
-            var sender = new MailSender(MailServerConfiguration.SmtpServer, MailServerConfiguration.Port, MailServerConfiguration.EnableSSL, MailServerConfiguration.UserName, MailServerConfiguration.Password);
-            sender.SendWithImages(MailServerConfiguration.UserName, MailConfiguration.ToEmail, MailConfiguration.Subject, builder.ToString(), lst.ToArray());
+            var sender = new MailSender(MailServerConfiguration.SmtpServer, MailServerConfiguration.Port, MailServerConfiguration.EnableSSL, MailServerConfiguration.UserName, MailServerConfiguration.Password);                        
+
+            sender.SendWithImages(MailServerConfiguration.UserName, MailConfiguration.ToEmail, MailConfiguration.Subject, builder.ToString(), lst.ToArray(), _files);
 
         }
 

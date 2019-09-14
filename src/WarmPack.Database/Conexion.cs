@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,6 +9,7 @@ using System.Reflection;
 using WarmPack.Classes;
 using WarmPack.Data;
 using WarmPack.Database.Helpers;
+using WarmPack.Extensions;
 
 namespace WarmPack.Database
 {
@@ -939,6 +942,26 @@ namespace WarmPack.Database
                 return false;
             }            
         }
+
+        public Result[] ExecuteScript(string script)
+        {
+            List<Result> result = new List<Result>();
+            var scripts = script.Split(new string[] { "GO\r\n", "\r\nGO\r\n", "GO", "GO\t", " GO ", "\tGO\t", " go ", "\r\ngo\r\n", "go\t", "\tgo\t" }, StringSplitOptions.RemoveEmptyEntries);
+
+            scripts.Map(item =>
+            {
+                return item.Replace("\r", "").Replace("\n", "");
+            })
+            .ForEach(scriptText =>
+            {
+                var r = this.Execute(scriptText);
+                r.Data = scriptText;
+                result.Add(r);
+            });
+
+            return result.ToArray();
+        }
+
 
     }
 }
