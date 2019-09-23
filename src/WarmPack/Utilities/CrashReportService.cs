@@ -14,6 +14,8 @@ namespace WarmPack.Utilities
     public static class CrashReportService
     {
         private static MailSenderAttachmentList _files;
+        private static string _extraInfo = string.Empty;
+        private static Func<string> _extraInfoFunc;
 
         public static void Start()
         {
@@ -50,6 +52,16 @@ namespace WarmPack.Utilities
             }
 
             _files.Add(attachment);
+        }
+
+        public static void AddMailExtraInfoBlockOnException(string extraInfo)
+        {
+            _extraInfo += extraInfo;            
+        }
+
+        public static void AddMailExtraInfoBlockOnException(Func<string> onException)
+        {
+            _extraInfoFunc = onException;            
         }
 
         private static bool IgnoreException(Exception exception)
@@ -146,6 +158,22 @@ namespace WarmPack.Utilities
                 builder.AppendLine($"<li>{file.Name}</li>");
             }
             builder.AppendLine("</ul>");
+
+            builder.AppendLine("<h2 style='color:#e2710d'>Información Extra</h2><br>");
+            builder.AppendLine(_extraInfo);
+
+            if(_extraInfoFunc != null)
+            {
+                try
+                {
+                    _extraInfo += _extraInfoFunc();
+                }
+                catch (Exception ex1)
+                {
+                    _extraInfo += "<strong>Ocurrio un error al ejecutar la funcion para obtener información extra :</strong></br>" + ex1.Message;
+                }
+                builder.AppendLine(_extraInfo);
+            }            
 
             builder.AppendLine("</body></html>");
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -173,7 +171,7 @@ namespace WarmPack.Database
 
         public Result Execute(string query)
         {
-            return Execute(query, null);
+             return Execute(query, null);
         }
 
         public Result Execute(string query, ConexionParameters parameters)
@@ -206,7 +204,7 @@ namespace WarmPack.Database
                         }
                     }
 
-                    cmd.ExecuteNonQuery();
+                    var rows = cmd.ExecuteNonQuery();
 
                     if (parameters != null)
                     {
@@ -948,15 +946,24 @@ namespace WarmPack.Database
             List<Result> result = new List<Result>();
             var scripts = script.Split(new string[] { "GO\r\n", "\r\nGO\r\n", "GO", "GO\t", " GO ", "\tGO\t", " go ", "\r\ngo\r\n", "go\t", "\tgo\t" }, StringSplitOptions.RemoveEmptyEntries);
 
-            scripts.Map(item =>
-            {
-                return item.Replace("\r", "").Replace("\n", "");
-            })
+            scripts
+            //.Map(item =>
+            //{
+            //    return item.Replace("\r", "").Replace("\n", "");
+            //})
             .ForEach(scriptText =>
             {
-                var r = this.Execute(scriptText);
-                r.Data = scriptText;
-                result.Add(r);
+                try
+                {
+                    var r = this.Execute(scriptText);
+                    r.Data = scriptText;
+                    result.Add(r);
+                }
+                catch(Exception ex)
+                {
+                    result.Add(new Result(ex));
+                }
+                
             });
 
             return result.ToArray();

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
 namespace WarmPack.App
@@ -40,6 +41,8 @@ namespace WarmPack.App
                 return Assembly.GetEntryAssembly().GetName().Version.ToString();
             }
         }
+
+        
 
     }
 }

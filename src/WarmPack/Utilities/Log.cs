@@ -5,15 +5,36 @@ using WarmPack.Extensions;
 
 namespace WarmPack.Utilities
 {
-    public static class Log
+    public class Log
     {
         public static readonly string LogPath = @"C:\Logs\" + Globals.ApplicationName + ".log";
+        private string _Path = LogPath; 
+
+        public Log()
+        {
+
+        }
+
+        public Log(string path)
+        {
+            _Path = path;
+        }
+
+        public void WriteLog(string message)
+        {
+            _Write(message, _Path);
+        }        
 
         public static void Write(string message)
         {
+            _Write(message, LogPath);            
+        }
+
+        private static void _Write(string message, string path)
+        {
             try
             {
-                var fileInfo = new FileInfo(LogPath);
+                var fileInfo = new FileInfo(path);
 
                 var directory = new DirectoryInfo(fileInfo.DirectoryName);
 
@@ -24,16 +45,16 @@ namespace WarmPack.Utilities
                 }
 
                 string resto = "";
-                if (System.IO.File.Exists(LogPath))
+                if (System.IO.File.Exists(path))
                 {
-                    System.IO.StreamReader lector = new System.IO.StreamReader(LogPath);
+                    System.IO.StreamReader lector = new System.IO.StreamReader(path);
                     resto = lector.ReadToEnd();
 
                     lector.Close();
                     lector.Dispose();
                 }
 
-                System.IO.StreamWriter escritor = new System.IO.StreamWriter(LogPath);
+                System.IO.StreamWriter escritor = new System.IO.StreamWriter(path);
 
                 escritor.WriteLine(string.Format("[ {0} ] {1}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), message));
 
