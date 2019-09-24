@@ -22,21 +22,19 @@ namespace WarmPack.Utilities
             if (AppDomain.CurrentDomain != null)
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+#if NET35 || NET45
             if (System.Windows.Application.Current != null)
             {
                 System.Windows.Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             }
+#endif
 
-
-
-
-
-#if NET45 || NET451 || NET452 || NET46 || NET461 || NET462 || NET47 || NET471 || NET472
+#if NET45
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 #endif
         }
 
-#if NET45 || NET451 || NET452 || NET46 || NET461 || NET462 || NET47 || NET471 || NET472
+#if NET45
         private static void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             SendMail(e.Exception as Exception);
@@ -78,6 +76,7 @@ namespace WarmPack.Utilities
             return ignore;
         }
 
+#if NET35 || NET45
         private static void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             if (IgnoreException(e.Exception))
@@ -88,6 +87,7 @@ namespace WarmPack.Utilities
             if (CloseApplicationWhenUnhandledError)
                 Environment.Exit(0);
         }
+#endif
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -181,8 +181,11 @@ namespace WarmPack.Utilities
             ScreenCapture screen = new ScreenCapture();
             var img = screen.CaptureScreen();
 
+
             var lst = new List<Image>();
             lst.Add(img);
+
+#if NET35 || NET45
 
             if (showMessage)
             {
@@ -191,7 +194,7 @@ namespace WarmPack.Utilities
                 else
                     MessageBox.Show("Ha ocurrido un error en la aplicacion. Se han recopilado los datos de este error para ser analizados. Pulse aceptar para continuar.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-
+#endif
             //var sender = new MailSender("172.19.1.4", 587, false, "correoautomatico@difarmer.com", "Difarmer01");
             var sender = new MailSender(MailServerConfiguration.SmtpServer, MailServerConfiguration.Port, MailServerConfiguration.EnableSSL, MailServerConfiguration.UserName, MailServerConfiguration.Password);                        
 

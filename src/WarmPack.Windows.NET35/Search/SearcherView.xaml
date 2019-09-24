@@ -1,0 +1,113 @@
+﻿<Window x:Class="WarmPack.Windows.Search.SearcherView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tk="http://schemas.microsoft.com/wpf/2008/toolkit"
+        xmlns:local="clr-namespace:WarmPack.Windows.Search"
+        mc:Ignorable="d"        
+        Title="SearcherView" 
+        Height="500" 
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanMinimize"
+        BorderBrush="#3671d1"
+        BorderThickness="3"        
+        FontSize="14"
+        Loaded="Window_Loaded"
+        MouseDown="Window_MouseDown"
+        >    
+    <Border BorderBrush="#609dff"
+            BorderThickness="3"                        
+            >
+        <Grid Margin="5" 
+              FocusManager.FocusedElement="{Binding ElementName=SearchText, UpdateSourceTrigger=PropertyChanged}"
+              >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    >
+                <TextBlock Text="Buscar :"                           
+                           VerticalAlignment="Center"
+                           Margin="5,3"
+                           Width="50"
+                           TextAlignment="Right"
+                       />
+                <TextBox Width="250"
+                         Margin="5,0"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"                         
+                         Name="SearchText"                         
+                     >                    
+                </TextBox>
+            </StackPanel>
+
+            <tk:DataGrid Grid.Row="1"                     
+                         Name="SearchItemsDataGridView"
+                         ItemsSource="{Binding ItemSource, UpdateSourceTrigger=PropertyChanged}"                         
+                         CanUserAddRows="False"
+                         CanUserDeleteRows="False"
+                         CanUserResizeRows="False"
+                         RowHeaderWidth="0"
+                         CanUserReorderColumns="False"   
+                         AutoGenerateColumns="False"
+                         SelectionMode="Single"
+                         SelectionUnit="FullRow"
+                         GridLinesVisibility="None"
+                         AlternatingRowBackground="#d0e3f2"
+                         SelectedItem="{Binding CurrentItem, UpdateSourceTrigger=PropertyChanged}"
+                         MouseDoubleClick="SearchItemsDataGridView_MouseDoubleClick"
+                     >
+                <tk:DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                                    Color="#9AFF6A"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                    Color="#333"/>
+                    <!--<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" 
+                                     Color="#9AFF6A"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" 
+                                    Color="#333"/>-->
+                </tk:DataGrid.Resources>
+            </tk:DataGrid>
+
+            <StackPanel Grid.Row="2"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Visibility="Collapsed"
+                    >
+                <Button Content="Aceptar"
+                        Width="100"
+                        Margin="5,0"
+                        Command="{Binding AcceptCommand}"
+                        />
+
+                <Button Content="Cancelar"
+                        Width="100"
+                        Margin="5,0"
+                        Command="{Binding CloseCommand}"
+                        />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        Grid.Row="2"
+                        VerticalAlignment="Center"
+                        >
+                <TextBlock Text="(ENTER) Buscar &amp; Seleccionar"
+                           Margin="5,3"
+                           FontSize="11"
+                           />
+                <TextBlock Text="(ESC) Salir"
+                           Margin="20,3"
+                           FontSize="11"
+                           />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

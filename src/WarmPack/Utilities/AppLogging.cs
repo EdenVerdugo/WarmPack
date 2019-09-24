@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET35 || NET45
+using System;
 
 namespace WarmPack.Utilities
 {
@@ -6,8 +7,11 @@ namespace WarmPack.Utilities
     {
         public static void Start()
         {
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             System.Windows.Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+
         }
 
         private static void SaveLog(Exception x)
@@ -34,3 +38,4 @@ namespace WarmPack.Utilities
         }
     }
 }
+#endif

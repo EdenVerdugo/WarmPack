@@ -2,13 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netcoreapp3.0;net45</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;net45;net35</TargetFrameworks>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon />
-    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.0|AnyCPU'">
+    <OutputPath>..\..\dist\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net35|AnyCPU'">
     <OutputPath>..\..\dist\</OutputPath>
   </PropertyGroup>
 
@@ -17,8 +19,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WarmPack.Core.Windows\WarmPack.Core.Windows.csproj" />
+    <Compile Remove="Controls\DatePickerEx.cs" />
+    <Compile Remove="Extensions\DataGridExtension.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WarmPack\WarmPack.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
 </Project>
