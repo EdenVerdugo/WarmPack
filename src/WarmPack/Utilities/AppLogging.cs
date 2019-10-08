@@ -7,11 +7,15 @@ namespace WarmPack.Utilities
     {
         public static void Start()
         {
+            if (AppDomain.CurrentDomain != null)
+            {
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            }                
 
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
-            System.Windows.Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-
+            if (System.Windows.Application.Current != null)
+            {
+                System.Windows.Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            }
         }
 
         private static void SaveLog(Exception x)

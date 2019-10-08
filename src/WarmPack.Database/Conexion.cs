@@ -16,19 +16,30 @@ namespace WarmPack.Database
         internal string ThrowExceptionExecuteMessage = "An error occurred while executing the query.\n\nException: ";
         internal string ThrowExceptionRecordsetRead = "There is nothing more recordsets to read.";
 
-        protected ConexionType _conexionType;
-        protected IDbConnection _conexion;
-        protected IDbTransaction _transaction;
+        internal ConexionType _conexionType;
+        internal IDbConnection _conexion;
+        internal IDbTransaction _transaction;
 
         internal IDbCommand _commandRecordsets;
         internal IDataReader _readerRecordsets;
         internal ConexionParameters _parametersRecordsets;
 
+        internal ConnectionString _connectionString;
+        public ConnectionString ConnectionString
+        {
+            get
+            {
+                return _connectionString;
+            }
+        }
+
         internal bool _closeConnection = true;
 
         public int ConexionTimeOut { get; set; }
 
-        protected void ConexionInit(ConexionType conexionType, string conectionString)
+       
+
+        protected void ConexionInit(ConexionType conexionType, string connectionString)
         {
             ConexionTimeOut = 30;
             _conexionType = conexionType;
@@ -37,7 +48,9 @@ namespace WarmPack.Database
             {
                 case ConexionType.MSSQLServer:
 
-                    _conexion = new SqlConnection(conectionString);
+                    _conexion = new SqlConnection(connectionString);
+                    var csb = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+                    _connectionString = new ConnectionString(csb.DataSource, csb.InitialCatalog, csb.UserID, csb.Password);
 
 
                     break;
@@ -55,7 +68,7 @@ namespace WarmPack.Database
             //};
         }
 
-        public string ConnectionString(ConexionType conexionType, string server, string db, string user, string password)
+        public string ConnectionStringBuilder(ConexionType conexionType, string server, string db, string user, string password)
         {
             var connectionString = "";
 
@@ -72,6 +85,7 @@ namespace WarmPack.Database
                     };
 
                     connectionString = sqlbuilder.ConnectionString;
+                    _connectionString = new ConnectionString(sqlbuilder.DataSource, sqlbuilder.InitialCatalog, sqlbuilder.UserID, sqlbuilder.Password);
 
                     break;
                     //case ConexionType.PostgreSQL:
@@ -93,7 +107,7 @@ namespace WarmPack.Database
 
         public Conexion(ConexionType conexionType, string server, string db, string user, string password)
         {
-            ConexionInit(conexionType, ConnectionString(conexionType, server, db, user, password));
+            ConexionInit(conexionType, ConnectionStringBuilder(conexionType, server, db, user, password));
         }
 
         public Conexion(ConexionType conexionType, string connectionString)
@@ -103,7 +117,7 @@ namespace WarmPack.Database
 
         public Conexion(ConexionType conexionType, ConnectionString connectionString)
         {
-            ConexionInit(conexionType, this.ConnectionString(conexionType, connectionString.Server, connectionString.Database, connectionString.User, connectionString.Password));
+            ConexionInit(conexionType, this.ConnectionStringBuilder(conexionType, connectionString.Server, connectionString.Database, connectionString.User, connectionString.Password));
         }
 
         public void TransactionBegin()
@@ -915,7 +929,7 @@ namespace WarmPack.Database
                             }
                         }
                     }
-
+                    
                     lst.Add(obj);
                 }
             }
@@ -941,10 +955,22 @@ namespace WarmPack.Database
             }            
         }
 
+        public void ChangeDatabase(string database)
+        {
+            ConnectionString.Database = database;
+
+            if (_conexion != null)
+            {
+                _conexion.Dispose();                
+            }
+
+            ConexionInit(_conexionType, _conexionType == ConexionType.MSSQLServer ? ConnectionString.ToMsqlConnectionString() : null);
+        }
+
         public Result[] ExecuteScript(string script)
         {
             List<Result> result = new List<Result>();
-            var scripts = script.Split(new string[] { "GO\r\n", "\r\nGO\r\n", "GO", "GO\t", " GO ", "\tGO\t", " go ", "\r\ngo\r\n", "go\t", "\tgo\t" }, StringSplitOptions.RemoveEmptyEntries);
+            var scripts = script.Split(new string[] { "\r\nGO\r\n", "\r\nGO\t", " GO ", "\tGO\t", " go ", "\r\ngo\r\n", "\tgo\t" }, StringSplitOptions.RemoveEmptyEntries);
 
             scripts
             //.Map(item =>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WarmPack.Extensions
 {
@@ -15,6 +16,16 @@ namespace WarmPack.Extensions
         public static T[] Map<T>(this T[] array, Func<T, T> func)
         {
             for(int i = 0; i < array.Length; i++)
+            {
+                array[i] = func(array[i]);
+            }
+
+            return array;
+        }
+
+        public static List<T> Map<T>(this List<T> array, Func<T, T> func)
+        {
+            for (int i = 0; i < array.Count; i++)
             {
                 array[i] = func(array[i]);
             }
