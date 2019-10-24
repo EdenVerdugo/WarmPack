@@ -9,10 +9,10 @@ namespace WarmPack.Extensions
         {
             string msg = string.Format(
                 "\r\n => Modulo: {0} \r\n => Clase: {1} \r\n => Metodo: {2} \r\n => Exception: {3} \r\n => Parametros:\r\n",
-                ex.TargetSite.Module,
-                ex.TargetSite.ReflectedType.FullName,
-                ex.TargetSite.Name,
-                ex.Message
+                ex?.TargetSite?.Module,
+                ex?.TargetSite?.ReflectedType?.FullName,
+                ex?.TargetSite?.Name,
+                ex?.Message
                 );
 
             return msg;

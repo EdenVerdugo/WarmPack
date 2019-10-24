@@ -257,11 +257,13 @@ namespace WarmPack.Windows.Search
             {
                 _View.Dispatcher.Invoke(new Action(() =>
                 {
+                    CurrentItem = ItemsDataSource.FirstOrDefault();
+
                     _View.SearchItemsDataGridView.ItemsSource = ItemsDataSource;
+                    _View.SearchItemsDataGridView.SelectedItem = CurrentItem;
 
                     if (ItemsDataSource?.Count == 1 && _firstShow)
-                    {
-                        CurrentItem = ItemsDataSource.FirstOrDefault();
+                    {                        
                         _View.Close();
                     }
 
@@ -273,7 +275,7 @@ namespace WarmPack.Windows.Search
                     }
 
                     SearchTextIsEnabled = true;
-                    IsSearching = false;
+                    IsSearching = false;                   
 
                 }));
             });
@@ -460,9 +462,11 @@ namespace WarmPack.Windows.Search
             //    this.CurrentItem = ItemsDataSource[index - 1];            
 
             if (_View.SearchItemsDataGridView.SelectedIndex > 0)
+            {
                 _View.SearchItemsDataGridView.SelectedIndex = _View.SearchItemsDataGridView.SelectedIndex - 1;
 
-            _View.SearchItemsDataGridView?.ScrollIntoView(_View.SearchItemsDataGridView.SelectedItem);
+                _View.SearchItemsDataGridView?.ScrollIntoView(_View.SearchItemsDataGridView?.SelectedItem);
+            }
         }
 
 
@@ -492,9 +496,11 @@ namespace WarmPack.Windows.Search
             //    this.CurrentItem = ItemsDataSource[index + 1];
 
             if (_View.SearchItemsDataGridView.SelectedIndex < (_View.SearchItemsDataGridView.Items?.Count - 1))
+            {
                 _View.SearchItemsDataGridView.SelectedIndex = _View.SearchItemsDataGridView.SelectedIndex + 1;
 
-            _View.SearchItemsDataGridView?.ScrollIntoView(_View.SearchItemsDataGridView.SelectedItem);
+                _View.SearchItemsDataGridView?.ScrollIntoView(_View.SearchItemsDataGridView.SelectedItem);
+            }                
         }
     }
 }

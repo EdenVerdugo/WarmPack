@@ -258,10 +258,11 @@ namespace WarmPack.Windows.Search
                 _View.Dispatcher.Invoke(new Action(() =>
                 {
                     _View.SearchItemsDataGridView.ItemsSource = ItemsDataSource;
+                    CurrentItem = ItemsDataSource.FirstOrDefault();
+                    _View.SearchItemsDataGridView.SelectedItem = CurrentItem;
 
                     if (ItemsDataSource?.Count == 1 && _firstShow)
-                    {
-                        CurrentItem = ItemsDataSource.FirstOrDefault();
+                    {                        
                         _View.Close();
                     }
 

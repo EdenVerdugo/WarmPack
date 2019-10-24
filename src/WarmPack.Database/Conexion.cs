@@ -750,11 +750,11 @@ namespace WarmPack.Database
                 }
 
                 _readerRecordsets = _commandRecordsets.ExecuteReader();
-
+                
                 switch (this._conexionType)
                 {
                     case ConexionType.MSSQLServer:
-                        result = ((SqlDataReader)_readerRecordsets).HasRows;
+                        result = true; //siempre regresar verdadero, ya que si hay una excepción no llegaria a este punto //((SqlDataReader)_readerRecordsets).HasRows;
                         break;
                         //case ConexionType.PostgreSQL:
                         //    result = ((PgSqlDataReader)_readerRecordsets).HasRows;
