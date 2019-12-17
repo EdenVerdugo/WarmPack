@@ -4,6 +4,8 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>netcoreapp3.0;net45;net35</TargetFrameworks>
     <UseWPF>true</UseWPF>
+    <Version>2019.12.17.0</Version>
+    <Authors>Eden Verdugo</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.0|AnyCPU'">

@@ -6,9 +6,9 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.0": {
-      "WarmPack.Core.Windows/1.0.0": {
+      "WarmPack.Core.Windows/2019.12.17.0": {
         "dependencies": {
-          "WarmPack": "1.0.0"
+          "WarmPack": "2019.12.17"
         },
         "runtime": {
           "WarmPack.Core.Windows.dll": {}
@@ -26,7 +26,7 @@
           "Microsoft.Win32.SystemEvents": "4.6.0"
         }
       },
-      "WarmPack/1.0.0": {
+      "WarmPack/2019.12.17": {
         "dependencies": {
           "System.Drawing.Common": "4.6.0"
         },
@@ -37,7 +37,7 @@
     }
   },
   "libraries": {
-    "WarmPack.Core.Windows/1.0.0": {
+    "WarmPack.Core.Windows/2019.12.17.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -63,7 +63,7 @@
       "path": "system.drawing.common/4.6.0",
       "hashPath": "system.drawing.common.4.6.0.nupkg.sha512"
     },
-    "WarmPack/1.0.0": {
+    "WarmPack/2019.12.17": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -1,5 +1,4 @@
-﻿#if NET35 || NET45
-using System;
+﻿using System;
 
 namespace WarmPack.Utilities
 {
@@ -18,8 +17,19 @@ namespace WarmPack.Utilities
             }
         }
 
+        private static string GetTextException(Exception ex)
+        {
+            if (ex == null)
+                return "";
+
+            return $"Exception: {ex.Message}\r\nStackTrace: {ex.StackTrace}" + GetTextException(ex.InnerException);
+        }
+
         private static void SaveLog(Exception x)
         {
+            string msg = string.Format($"Modulo: {x.TargetSite.Module}\r\nClase: {x.TargetSite.Module}\r\n Pila de Excepciones: \r\n{ GetTextException(x) }");
+                   
+            /*
             string msg = string.Format(
             "\r\n => Modulo: {0} \r\n => Clase: {1} \r\n => Metodo: {2} \r\n => Exception: {3} \r\n",
             x.TargetSite.Module,
@@ -27,7 +37,7 @@ namespace WarmPack.Utilities
             x.TargetSite.Name,
             x.Message
             );
-
+            */
             Log.Write(msg);
         }
 
@@ -42,4 +52,3 @@ namespace WarmPack.Utilities
         }
     }
 }
-#endif

@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.0": {
-      "WarmPack/1.0.0": {
+      "WarmPack/2019.12.17.0": {
         "dependencies": {
           "System.Drawing.Common": "4.6.0"
         },
@@ -29,7 +29,7 @@
     }
   },
   "libraries": {
-    "WarmPack/1.0.0": {
+    "WarmPack/2019.12.17.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

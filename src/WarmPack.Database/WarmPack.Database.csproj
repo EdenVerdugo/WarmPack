@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>net35;net45;netcoreapp3.0</TargetFrameworks>
+    <Version>2019.12.17.0</Version>
+    <Authors>Eden Verdugo</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.0|AnyCPU'">

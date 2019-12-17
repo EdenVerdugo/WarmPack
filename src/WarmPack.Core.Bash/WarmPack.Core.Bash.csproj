@@ -5,6 +5,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <ApplicationIcon />
     <StartupObject></StartupObject>
+    <Version>2019.12.17.0</Version>
+    <Authors>Eden Verdugo</Authors>
   </PropertyGroup>
 
   <ItemGroup>
