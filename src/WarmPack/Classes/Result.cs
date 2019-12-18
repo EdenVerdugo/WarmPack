@@ -7,7 +7,8 @@ namespace WarmPack.Classes
         public bool Value { get; set; }
         public string Message { get; set; }
         public object Data { get; set; }
-
+        private string _InfoMessage { get; set; }
+        
         public Result()
         {
 
@@ -45,6 +46,18 @@ namespace WarmPack.Classes
         public static Result Create(Exception ex)
         {
             return new Result(ex);
+        }
+
+        public string InfoMessage()
+        {
+            return _InfoMessage;
+        }
+
+        public string InfoMessage(string infoMessageValue)
+        {
+            _InfoMessage = infoMessageValue;
+            
+            return InfoMessage();
         }
     }
 

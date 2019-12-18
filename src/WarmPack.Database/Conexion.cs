@@ -37,7 +37,9 @@ namespace WarmPack.Database
 
         public int ConexionTimeOut { get; set; }
 
-       
+        public delegate void ConexionInfoMessageHandler(SqlInfoMessageEventArgs args);
+
+        public event ConexionInfoMessageHandler InfoMessage;
 
         protected void ConexionInit(ConexionType conexionType, string connectionString)
         {
@@ -51,8 +53,7 @@ namespace WarmPack.Database
                     _conexion = new SqlConnection(connectionString);
                     var csb = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
                     _connectionString = new ConnectionString(csb.DataSource, csb.InitialCatalog, csb.UserID, csb.Password);
-
-
+                    
                     break;
                     //case ConexionType.PostgreSQL:
 
@@ -66,6 +67,11 @@ namespace WarmPack.Database
             //    ConectionString = conectionString,
             //    DbConnection = _conexion
             //};
+        }
+
+        private void Conexion_InfoMessage(object sender, SqlInfoMessageEventArgs e)
+        {
+            InfoMessage.Invoke(e);
         }
 
         public string ConnectionStringBuilder(ConexionType conexionType, string server, string db, string user, string password)
@@ -183,6 +189,35 @@ namespace WarmPack.Database
             return result;
         }
 
+        private void ConexionOpen()
+        {
+            if (_transaction == null && this._conexion.State != ConnectionState.Open)
+            {
+                this._conexion.Open();
+
+                AddConexionInfoMessageEventHandler();
+            }
+        }
+
+        private void ConexionClose()
+        {
+            if (_transaction == null && _closeConnection)
+            {
+                this._conexion.Close();
+                RemoveConexionInfoMessageEventHandler();
+            }
+        }
+
+        private void AddConexionInfoMessageEventHandler()
+        {
+            (this._conexion as SqlConnection).InfoMessage += Conexion_InfoMessage;
+        }
+
+        private void RemoveConexionInfoMessageEventHandler()
+        {
+            (this._conexion as SqlConnection).InfoMessage -= Conexion_InfoMessage;
+        }
+
         public Result Execute(string query)
         {
              return Execute(query, null);
@@ -192,8 +227,7 @@ namespace WarmPack.Database
         {
             try
             {
-                if (_transaction == null && this._conexion.State != ConnectionState.Open)
-                    this._conexion.Open();
+                ConexionOpen();                                  
 
                 using (var cmd = this._conexion.CreateCommand())
                 {
@@ -239,8 +273,7 @@ namespace WarmPack.Database
             }
             finally
             {
-                if (_transaction == null && _closeConnection)
-                    this._conexion.Close();
+                ConexionClose();                    
             }
 
             return ResultBuilder(parameters);
@@ -255,8 +288,7 @@ namespace WarmPack.Database
         {
             try
             {
-                if (_transaction == null && this._conexion.State != ConnectionState.Open)
-                    this._conexion.Open();
+                ConexionOpen();
 
                 using (var cmd = this._conexion.CreateCommand())
                 {
@@ -314,8 +346,7 @@ namespace WarmPack.Database
             }
             finally
             {
-                if (_transaction == null && _closeConnection)
-                    this._conexion.Close();
+                ConexionClose();
             }
 
             return ResultBuilder(parameters);
@@ -330,8 +361,7 @@ namespace WarmPack.Database
         {
             try
             {
-                if (_transaction == null && this._conexion.State != ConnectionState.Open)
-                    this._conexion.Open();
+                ConexionOpen();
 
                 using (var cmd = this._conexion.CreateCommand())
                 {
@@ -389,8 +419,7 @@ namespace WarmPack.Database
             }
             finally
             {
-                if (_transaction == null && _closeConnection)
-                    this._conexion.Close();
+                ConexionClose();
             }
 
             return ResultBuilder(parameters);
@@ -406,8 +435,7 @@ namespace WarmPack.Database
             object scalar;
             try
             {
-                if (_transaction == null && this._conexion.State != ConnectionState.Open)
-                    this._conexion.Open();
+                ConexionOpen();
 
                 using (var cmd = this._conexion.CreateCommand())
                 {
@@ -453,8 +481,7 @@ namespace WarmPack.Database
             }
             finally
             {
-                if (_transaction == null && _closeConnection)
-                    this._conexion.Close();
+                ConexionClose();
             }
 
             var result = ResultBuilder<T>(parameters);
@@ -496,8 +523,7 @@ namespace WarmPack.Database
             Castable result;
             try
             {
-                if (_transaction == null && this._conexion.State != ConnectionState.Open)
-                    this._conexion.Open();
+                ConexionOpen();
 
                 using (var cmd = this._conexion.CreateCommand())
                 {
@@ -544,8 +570,7 @@ namespace WarmPack.Database
             }
             finally
             {
-                if (_transaction == null && _closeConnection)
-                    this._conexion.Close();
+                ConexionClose();
             }
 
             return result;
@@ -578,8 +603,7 @@ namespace WarmPack.Database
 
             try
             {
-                if (_transaction == null && this._conexion.State != ConnectionState.Open)
-                    this._conexion.Open();
+                ConexionOpen();                   
 
                 using (var cmd = this._conexion.CreateCommand())
                 {
@@ -629,8 +653,7 @@ namespace WarmPack.Database
             }
             finally
             {
-                if (_transaction == null && _closeConnection)
-                    this._conexion.Close();
+                ConexionClose();
             }
 
             var result = ResultBuilder<List<T>>(parameters);
@@ -648,8 +671,7 @@ namespace WarmPack.Database
         {
             try
             {
-                if (_transaction == null && this._conexion.State != ConnectionState.Open)
-                    this._conexion.Open();
+                ConexionOpen();
 
                 using (var cmd = this._conexion.CreateCommand())
                 {
@@ -705,8 +727,7 @@ namespace WarmPack.Database
             }
             finally
             {
-                if (_transaction == null && _closeConnection)
-                    this._conexion.Close();
+                ConexionClose();
             }
         }
 
@@ -721,8 +742,7 @@ namespace WarmPack.Database
 
             try
             {
-                if (_transaction == null && this._conexion.State != ConnectionState.Open)
-                    this._conexion.Open();
+                ConexionOpen();
 
                 this._commandRecordsets = this._conexion.CreateCommand();
 
@@ -798,8 +818,7 @@ namespace WarmPack.Database
                 _readerRecordsets.Dispose();
                 _readerRecordsets = null;
 
-                if (_transaction == null && _closeConnection)
-                    _conexion.Close();
+                ConexionClose();
 
             }
 
@@ -837,9 +856,7 @@ namespace WarmPack.Database
                 _readerRecordsets.Dispose();
                 _readerRecordsets = null;
 
-                if (_transaction == null && _closeConnection)
-                    _conexion.Close();
-
+                ConexionClose();
             }
         }
 
