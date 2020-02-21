@@ -71,7 +71,7 @@ namespace WarmPack.Database
 
         private void Conexion_InfoMessage(object sender, SqlInfoMessageEventArgs e)
         {
-            InfoMessage.Invoke(e);
+            InfoMessage?.Invoke(e);
         }
 
         public string ConnectionStringBuilder(ConexionType conexionType, string server, string db, string user, string password)
@@ -128,6 +128,7 @@ namespace WarmPack.Database
 
         public void TransactionBegin()
         {
+            ConexionOpen();
             _transaction = this._conexion.BeginTransaction();
         }
 
