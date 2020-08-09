@@ -7,6 +7,7 @@ using System.Reflection;
 using WarmPack.Classes;
 using WarmPack.Data;
 using WarmPack.Database.Helpers;
+using WarmPack.Database.Schema;
 using WarmPack.Extensions;
 
 namespace WarmPack.Database
@@ -37,6 +38,8 @@ namespace WarmPack.Database
 
         public int ConexionTimeOut { get; set; }
 
+        public ConexionSchema DbSchema { get; set; }
+
         public delegate void ConexionInfoMessageHandler(SqlInfoMessageEventArgs args);
 
         public event ConexionInfoMessageHandler InfoMessage;
@@ -61,6 +64,8 @@ namespace WarmPack.Database
 
                     //    break;
             }
+
+            DbSchema = new ConexionSchema(this, conexionType);
 
             //ConexionHelper = new ConexionHelper(this, conexionType)
             //{
