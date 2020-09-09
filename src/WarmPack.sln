@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Core.Windows", "Wa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Windows", "WarmPack.Windows\WarmPack.Windows.csproj", "{983A358E-9DD0-4E70-8659-98AD74F6267C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Test", "..\..\WarmPack.Test\WarmPack.Test.csproj", "{2B574DB4-7D57-4AC4-8DC4-3BADB2D26CA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Web", "WarmPack.Web\WarmPack.Web.csproj", "{8B2EF856-9662-4980-8546-C9D8206CD287}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{983A358E-9DD0-4E70-8659-98AD74F6267C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{983A358E-9DD0-4E70-8659-98AD74F6267C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{983A358E-9DD0-4E70-8659-98AD74F6267C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B574DB4-7D57-4AC4-8DC4-3BADB2D26CA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B574DB4-7D57-4AC4-8DC4-3BADB2D26CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B574DB4-7D57-4AC4-8DC4-3BADB2D26CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B574DB4-7D57-4AC4-8DC4-3BADB2D26CA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B2EF856-9662-4980-8546-C9D8206CD287}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B2EF856-9662-4980-8546-C9D8206CD287}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B2EF856-9662-4980-8546-C9D8206CD287}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B2EF856-9662-4980-8546-C9D8206CD287}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

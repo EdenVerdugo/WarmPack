@@ -7,8 +7,13 @@ namespace WarmPack.Utilities
 {
     public class Log
     {
-        public static readonly string LogPath = @"C:\Logs\" + Globals.ApplicationName + ".log";
-        private string _Path = LogPath; 
+        //public static readonly string LogPath = @"C:\Logs\" + Globals.ApplicationName + ".log";
+        private string _Path = ""; 
+
+        private static string GetLogName()
+        {
+            return string.Format($@"C:\Logs\[{ DateTime.Now.ToString("yyyy-MM-dd") }] {Globals.ApplicationName}.log");
+        }
 
         public Log()
         {
@@ -27,13 +32,18 @@ namespace WarmPack.Utilities
 
         public static void Write(string message)
         {
-            _Write(message, LogPath);            
+            _Write(message, GetLogName());            
         }
 
         private static void _Write(string message, string path)
         {
             try
             {
+                if (string.IsNullOrEmpty(path))
+                {
+                    path = GetLogName();
+                }
+
                 var fileInfo = new FileInfo(path);
 
                 var directory = new DirectoryInfo(fileInfo.DirectoryName);

@@ -121,5 +121,41 @@ namespace WarmPack.Extensions
 
             return string.IsNullOrEmpty(text);
         }
+
+        public static string RemoveAccent(this string text)
+        {
+            byte[] bytes = Encoding.GetEncoding("Cyrillic").GetBytes(text);
+            return Encoding.ASCII.GetString(bytes);
+        }
+
+        private static string GenerateSlug(this string phrase)
+        {
+            string str = phrase.RemoveAccent().ToLower();
+            
+            str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
+            
+            str = Regex.Replace(str, @"\s+", " ").Trim();
+            
+            str = str.Substring(0, str.Length <= 45 ? str.Length : 45).Trim();
+            str = Regex.Replace(str, @"\s", "-"); 
+            return str;
+        }
+
+        public static string ToUrlSlug(string value)
+        {            
+            value = value.ToLowerInvariant();
+
+            value = RemoveAccent(value);
+
+            value = Regex.Replace(value, @"\s", "-", RegexOptions.Compiled);
+
+            value = Regex.Replace(value, @"[^a-z0-9\s-_]", "", RegexOptions.Compiled);
+
+            value = value.Trim('-', '_');
+
+            value = Regex.Replace(value, @"([-_]){2,}", "$1", RegexOptions.Compiled);
+
+            return value;
+        }
     }
 }

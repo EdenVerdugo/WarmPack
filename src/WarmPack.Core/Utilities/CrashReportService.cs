@@ -5,9 +5,9 @@ using System.Text;
 using System.Windows;
 using WarmPack.App;
 using WarmPack.Extensions;
-#if NET45 || NET451 || NET452 || NET46 || NET461 || NET462 || NET47 || NET471 || NET472
-using System.Threading.Tasks;            
-#endif
+using System.Threading.Tasks;
+using System.Threading;
+
 
 namespace WarmPack.Utilities
 {
@@ -22,25 +22,31 @@ namespace WarmPack.Utilities
             if (AppDomain.CurrentDomain != null)
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-#if NET35 || NET45
-            if (System.Windows.Application.Current != null)
-            {
-                System.Windows.Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-            }
-#endif
 
-#if NET45
+            if (Application.Current != null)
+            {
+                Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            }
+
+            System.Windows.Forms.Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-#endif
+
+            
+
         }
 
-#if NET45
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private static void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             SendMail(e.Exception as Exception);
             Environment.Exit(0);
         }
-#endif
+
 
         public static void AddMailFileOnException(MailSenderAttachment attachment)
         {
@@ -76,7 +82,7 @@ namespace WarmPack.Utilities
             return ignore;
         }
 
-#if NET35 || NET45
+
         private static void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             if (IgnoreException(e.Exception))
@@ -87,7 +93,7 @@ namespace WarmPack.Utilities
             if (CloseApplicationWhenUnhandledError)
                 Environment.Exit(0);
         }
-#endif
+
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -150,30 +156,35 @@ namespace WarmPack.Utilities
             builder.AppendLine($"<li>{ Helpers.NetworkHelper.GetPublicExtternalIPAddress() }</li>");
             builder.AppendLine("</ul>");
 
-
-            builder.AppendLine("<h2 style='color:#e2710d'>Archivos anexados al correo</h2><br>");
-            builder.AppendLine("<ul>");
-            foreach (var file in _files)
+            if(_files != null)
             {
-                builder.AppendLine($"<li>{file.Name}</li>");
-            }
-            builder.AppendLine("</ul>");
-
-            builder.AppendLine("<h2 style='color:#e2710d'>Información Extra</h2><br>");
-            builder.AppendLine(_extraInfo);
-
-            if(_extraInfoFunc != null)
-            {
-                try
+                builder.AppendLine("<h2 style='color:#e2710d'>Archivos anexados al correo</h2><br>");
+                builder.AppendLine("<ul>");
+                foreach (var file in _files)
                 {
-                    _extraInfo += _extraInfoFunc();
+                    builder.AppendLine($"<li>{file.Name}</li>");
                 }
-                catch (Exception ex1)
-                {
-                    _extraInfo += "<strong>Ocurrio un error al ejecutar la funcion para obtener información extra :</strong></br>" + ex1.Message;
-                }
-                builder.AppendLine(_extraInfo);
+                builder.AppendLine("</ul>");
             }            
+
+            if(_extraInfo != null)
+            {
+                builder.AppendLine("<h2 style='color:#e2710d'>Información Extra</h2><br>");
+                builder.AppendLine(_extraInfo);
+
+                if (_extraInfoFunc != null)
+                {
+                    try
+                    {
+                        _extraInfo += _extraInfoFunc();
+                    }
+                    catch (Exception ex1)
+                    {
+                        _extraInfo += "<strong>Ocurrio un error al ejecutar la funcion para obtener información extra :</strong></br>" + ex1.Message;
+                    }
+                    builder.AppendLine(_extraInfo);
+                }
+            }                      
 
             builder.AppendLine("</body></html>");
 
@@ -185,7 +196,7 @@ namespace WarmPack.Utilities
             var lst = new List<Image>();
             lst.Add(img);
 
-#if NET35 || NET45
+
 
             if (showMessage)
             {
@@ -194,7 +205,7 @@ namespace WarmPack.Utilities
                 else
                     MessageBox.Show("Ha ocurrido un error en la aplicacion. Se han recopilado los datos de este error para ser analizados. Pulse aceptar para continuar.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-#endif
+
             //var sender = new MailSender("172.19.1.4", 587, false, "correoautomatico@difarmer.com", "Difarmer01");
             var sender = new MailSender(MailServerConfiguration.SmtpServer, MailServerConfiguration.Port, MailServerConfiguration.EnableSSL, MailServerConfiguration.UserName, MailServerConfiguration.Password);                        
 
