@@ -56,7 +56,7 @@ namespace WarmPack.Utilities
         /// <returns>Devuelve el texto encriptado o desencriptado.</returns>
         public static string EncryptString(string userKey, string text, Mode mode)
         {
-#if NET35 || NET45
+
             int temp = 0;
             int[] userKeyASCIIS = new int[Strings.Len(userKey) + 1];
 
@@ -115,9 +115,7 @@ namespace WarmPack.Utilities
             }
 
             return resultado;
-#else
-            return "";
-#endif
+
         }
     }
 }

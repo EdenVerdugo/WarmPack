@@ -2,13 +2,14 @@
 
 namespace WarmPack.Classes
 {
-    public class Result
+    public class Result : IResult
     {
         public bool Value { get; set; }
         public string Message { get; set; }
         public object Data { get; set; }
         private string _InfoMessage { get; set; }
-        
+        public int Code { get; set; }
+
         public Result()
         {
 
@@ -61,11 +62,12 @@ namespace WarmPack.Classes
         }
     }
 
-    public class Result<T>
+    public class Result<T> : IResult
     {
         public bool Value { get; set; }
         public string Message { get; set; }
         public T Data { get; set; }
+        public int Code { get; set; }
 
         public Result()
         {

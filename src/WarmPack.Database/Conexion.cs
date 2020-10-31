@@ -831,7 +831,7 @@ namespace WarmPack.Database
             return lst;
         }
 
-        public void RecordsetsResults<T>(Action<ConexionCastableRow> action)
+        public void RecordsetsResults(Action<ConexionCastableRow> action)
         {
             if (_readerRecordsets == null || _readerRecordsets.IsClosed)
             {

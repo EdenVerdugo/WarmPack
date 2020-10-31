@@ -43,6 +43,10 @@ namespace WarmPack.App
         }
 
         
+        public static string CombinePathName(string appName)
+        {
+            return Path.Combine(ApplicationPath, appName);
+        }
 
     }
 }

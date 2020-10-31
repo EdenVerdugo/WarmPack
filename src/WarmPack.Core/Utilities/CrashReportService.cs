@@ -21,8 +21,7 @@ namespace WarmPack.Utilities
         {
             if (AppDomain.CurrentDomain != null)
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
-
+            
             if (Application.Current != null)
             {
                 Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
@@ -31,9 +30,7 @@ namespace WarmPack.Utilities
             System.Windows.Forms.Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
 
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-
             
-
         }
 
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)

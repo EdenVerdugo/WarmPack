@@ -445,35 +445,35 @@ namespace WarmPack.App
             return new Castable(result);
         }
 
-        public T TryParameter<T>(String name, bool decrypt, Func<T> onError, string comment = null) where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
-        {
-            string result = null;
+        //public T TryParameter<T>(String name, bool decrypt, Func<T> onError, string comment = null) where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
+        //{
+        //    string result = null;
 
-            XmlNodeList nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].SelectNodes(CONF_Parameter);
-            Boolean finded = false;
-            foreach (XmlNode nod in nodes)
-            {
-                if (nod.Attributes[CONF_Parameter_Name].Value == name)
-                {
-                    result = nod.Attributes[CONF_Parameter_Value].Value;
-                    result = decrypt ? _encrypter.Decrypt(result) : result;
+        //    XmlNodeList nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].SelectNodes(CONF_Parameter);
+        //    Boolean finded = false;
+        //    foreach (XmlNode nod in nodes)
+        //    {
+        //        if (nod.Attributes[CONF_Parameter_Name].Value == name)
+        //        {
+        //            result = nod.Attributes[CONF_Parameter_Value].Value;
+        //            result = decrypt ? _encrypter.Decrypt(result) : result;
 
-                    finded = true;
-                    break;
-                }
-            }
+        //            finded = true;
+        //            break;
+        //        }
+        //    }
 
-            if (!finded)
-            {
-                var value = onError();
+        //    if (!finded)
+        //    {
+        //        var value = onError();
                 
-                Create(AppConfigurationType.Parameter, name, value.ToString(), decrypt, comment);
+        //        Create(AppConfigurationType.Parameter, name, value.ToString(), decrypt, comment);
 
-                return value;
-            }
+        //        return value;
+        //    }
 
-            return (T)Convert.ChangeType(result, typeof(T));
-        }
+        //    return (T)Convert.ChangeType(result, typeof(T));
+        //}
 
         public string TryConnectionString(string name, bool decrypt, Func<string> onError, string comment = null)
         {

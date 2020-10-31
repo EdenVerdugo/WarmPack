@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -50,6 +51,7 @@
     <Compile Include="App\AppConfiguration.cs" />
     <Compile Include="App\Globals.cs" />
     <Compile Include="Classes\Castable.cs" />
+    <Compile Include="Classes\IResult.cs" />
     <Compile Include="Classes\Result.cs" />
     <Compile Include="Classes\ResultList.cs" />
     <Compile Include="DataModel\ONotifyPropertyChanged.cs" />
@@ -59,6 +61,7 @@
     <Compile Include="Extensions\DecimalExtensions.cs" />
     <Compile Include="Extensions\DirectoryInfoExtensions.cs" />
     <Compile Include="Extensions\ExceptionExtensions.cs" />
+    <Compile Include="Extensions\FileInfoExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
@@ -67,6 +70,7 @@
     <Compile Include="Helpers\DateTimeHelper.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\ExpressionsHelper.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\NetworkHelper.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +83,7 @@
     <Compile Include="Utilities\Log.cs" />
     <Compile Include="Utilities\MailSender.cs" />
     <Compile Include="Utilities\MailSenderAttachment.cs" />
+    <Compile Include="Utilities\MailSenderAttachmentImage.cs" />
     <Compile Include="Utilities\MailSenderAttachmentList.cs" />
     <Compile Include="Utilities\ScreenCapture.cs" />
   </ItemGroup>

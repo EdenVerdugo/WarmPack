@@ -59,7 +59,7 @@ namespace WarmPack.Utilities
                     img.Save(ms, ImageFormat.Jpeg);
 
                     ms.Position = 0;
-
+                                        
                     var att = new Attachment(ms, $"{ Guid.NewGuid() }.jpg", "image/jpg");
                     att.ContentId = $"img_{i}";
 
@@ -71,7 +71,7 @@ namespace WarmPack.Utilities
                 if (files != null)
                     foreach (var file in files)
                     {
-                        var ms = new System.IO.MemoryStream(file.FileBuffer);
+                        var ms = new System.IO.MemoryStream(file.FileBuffer);                        
                         var att = new Attachment(ms, file.Name, string.IsNullOrEmpty(file.MimeType) ? "application/octet-stream" : file.MimeType);
 
                         msg.Attachments.Add(att);
@@ -98,7 +98,7 @@ namespace WarmPack.Utilities
                     file.Position = 0;
 
                     var att = new Attachment(file, file.Name, string.IsNullOrEmpty(mimeType) ? "application/octet-stream" : mimeType);
-                    //att.ContentId = $"img_{i}";
+                    att.ContentId = $"file_{i}";
 
                     msg.Attachments.Add(att);
 
@@ -124,6 +124,7 @@ namespace WarmPack.Utilities
                 {
                     var ms = new System.IO.MemoryStream(file.FileBuffer);
                     var att = new Attachment(ms, file.Name, string.IsNullOrEmpty(file.MimeType) ? "application/octet-stream" : file.MimeType);
+                    att.ContentId = $"file_{i}";
 
                     msg.Attachments.Add(att);
 
@@ -148,6 +149,7 @@ namespace WarmPack.Utilities
                 {
                     var ms = new System.IO.MemoryStream(file.FileBuffer);
                     var att = new Attachment(ms, file.Name, string.IsNullOrEmpty(file.MimeType) ? "application/octet-stream" : file.MimeType);
+                    att.ContentId = $"file_{i}";
 
                     msg.Attachments.Add(att);
 

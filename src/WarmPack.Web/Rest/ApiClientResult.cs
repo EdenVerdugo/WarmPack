@@ -18,7 +18,16 @@ namespace WarmPack.Web.Rest
         public ApiClientResult(HttpResponseMessage response, string data)
         {
             Response = response;
-            Data = JObject.Parse(data);
+
+            try
+            {
+                Data = JObject.Parse(data);
+            }
+            catch(Exception)
+            {
+                Data = JObject.Parse("{ content : 'No se pudo generar el JObject => checar en el Response.Content.ReadAsStringAsync()'}");                
+            }
+            
         }
         public HttpResponseMessage Response { get; set; }
         public JObject Data { get; set; }
