@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WarmPack.Web.Nancy.Models.Security;
 
 namespace WarmPack.Web.Nancy.Extensions
 {
@@ -22,6 +23,20 @@ namespace WarmPack.Web.Nancy.Extensions
                     return serializer.Deserialize(jsonTextReader);
                 }
             }
+        }
+
+        public static UserModel BindUser(this NancyModule nancy)
+        {
+            if (nancy.Context.CurrentUser == null) return new UserModel(nancy);
+
+            var usuario = new UserModel(nancy)
+            {
+                Id = Convert.ToInt32(nancy.Context.CurrentUser.FindFirst("idUsuario").Value),
+                User = nancy.Context.CurrentUser.FindFirst("usuario").Value,
+                Name = nancy.Context.CurrentUser.FindFirst("nombre").Value,                
+            };
+
+            return usuario;
         }
     }
 }
