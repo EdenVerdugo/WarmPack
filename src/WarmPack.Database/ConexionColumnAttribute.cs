@@ -1,4 +1,5 @@
 ﻿using System;
+using WarmPack.Classes;
 
 namespace WarmPack.Database
 {
@@ -10,6 +11,6 @@ namespace WarmPack.Database
         public ConexionColumnAttribute(string name)
         {
             this.Name = name;
-        }
+        }        
     }
 }

@@ -14,13 +14,22 @@ namespace WarmPack.Web.Nancy.Jwt
     public static class JwtManager
     {
         // modificar la clave de seguridad del token
-        public static string Key = "D1f4rM3r01!!";
+        /// <summary>
+        /// Esta es la clave de seguridad del token usar 12 caracteres. default => W4rmP4ck#13!
+        /// </summary>
+        public static string Key { get; set; } = "W4rmP4ck#13!";
 
-        // modificar el emisor del token si es necesario
-        public static string ValidIssuer = "http://www.difarmer.com";
+        // modificar el emisor del token si es necesario. 
+        /// <summary>
+        /// Esta es la entidad que generó el token. default => http://www.warmpack.com
+        /// </summary>
+        public static string ValidIssuer { get; set; } = "http://www.warmpack.com";
 
         // modificar las audencias del token
-        public static List<String> ValidAudiences = new List<String> { "Sistema Agentes", "Pagina Web" };        
+        /// <summary>
+        /// Lista de audiencias para el token. default => Pagina web
+        /// </summary>
+        public static List<String> ValidAudiences = new List<String> { "Pagina web" };        
         
         public static SymmetricSecurityKey SigningKey()
         {
@@ -28,9 +37,13 @@ namespace WarmPack.Web.Nancy.Jwt
 
             return new SymmetricSecurityKey(keyByteArray);
         }
+        
+        /// <summary>
+        /// Los datos extras que se necesiten guardar para el usuario van aqui
+        /// </summary>
+        public static Action<List<Claim>> JwtExtraClaims { get; set; }
 
-        //public static List<RefreshTokenItemModel> RefreshTokens = new List<RefreshTokenItemModel>();
-        public static Action<List<Claim>> JwtExtraClaims;
+        public static IRefreshTokenManager RefreshTokenManager { get; set; }
 
         public static TokenResponseModel GetJwt(UserModel usuario)
         {
@@ -47,7 +60,7 @@ namespace WarmPack.Web.Nancy.Jwt
                 new Claim(JwtRegisteredClaimNames.Iat, now.ToUniversalTime().ToString(), ClaimValueTypes.Integer64)
             };
 
-            JwtExtraClaims(claims);
+            JwtExtraClaims?.Invoke(claims);
 
             var jwt = new JwtSecurityToken(
                 issuer: ValidIssuer,
@@ -67,10 +80,7 @@ namespace WarmPack.Web.Nancy.Jwt
                 RefreshToken = Guid.NewGuid().ToString()
             };
 
-
-            //RefreshTokenRepository.Guardar(new RefreshTokenItemModel() { Usuario = usuario, Uid = response.RefreshToken });
-            //Globales.RefreshTokens.RemoveAll(p => p.Usuario?.IdUsuario == usuario.IdUsuario);
-            //Globales.RefreshTokens.Add(new RefreshTokenItemModel() { Usuario = usuario, Uid = response.RefreshToken });
+            RefreshTokenManager?.Save(new TokenItemModel(usuario, response.AccessToken, response.RefreshToken, response.ExpiresAt));
 
             return response;
         }

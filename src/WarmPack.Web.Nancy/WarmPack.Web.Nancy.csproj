@@ -71,7 +71,10 @@
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Extensions\NancyModuleExtensions.cs" />
+    <Compile Include="Models\Jwt\IRefreshTokenManager.cs" />
     <Compile Include="Jwt\JwtManager.cs" />
+    <Compile Include="Jwt\RefreshTokenManager.cs" />
+    <Compile Include="Models\Jwt\TokenItemModel.cs" />
     <Compile Include="Models\Jwt\TokenResponseModel.cs" />
     <Compile Include="Models\Security\UserModel.cs" />
     <Compile Include="NancySecureModule.cs" />

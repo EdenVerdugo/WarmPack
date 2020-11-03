@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WarmPack.Web.Nancy.Models.Security;
 
-namespace WarmPack.Web.Nancy.Extensions
+namespace WarmPack.Web.Nancy
 {
     public static class NancyModuleExtensions
     {
@@ -31,9 +31,9 @@ namespace WarmPack.Web.Nancy.Extensions
 
             var usuario = new UserModel(nancy)
             {
-                Id = Convert.ToInt32(nancy.Context.CurrentUser.FindFirst("idUsuario").Value),
-                User = nancy.Context.CurrentUser.FindFirst("usuario").Value,
-                Name = nancy.Context.CurrentUser.FindFirst("nombre").Value,                
+                Id = nancy.Context.CurrentUser.FindFirst("id").Value,
+                User = nancy.Context.CurrentUser.FindFirst("user").Value,
+                Name = nancy.Context.CurrentUser.FindFirst("name").Value,                
             };
 
             return usuario;
