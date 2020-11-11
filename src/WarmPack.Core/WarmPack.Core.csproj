@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\AppConfiguration.cs" />
+    <Compile Include="App\AppConfigurationItemModel.cs" />
     <Compile Include="App\Globals.cs" />
     <Compile Include="Classes\Castable.cs" />
     <Compile Include="Classes\IResult.cs" />

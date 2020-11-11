@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using WarmPack.Classes;
+using WarmPack.Core.App;
 using WarmPack.Extensions;
 using WarmPack.Utilities;
 
@@ -217,6 +219,43 @@ namespace WarmPack.App
 
             _xml.Save(this.Path);
         }
+
+        public List<AppConfigurationItemModel> ListAll(AppConfigurationType type, bool decrypt = false)
+        {
+            if(type == AppConfigurationType.ConexionString)
+            {
+                var result = new List<AppConfigurationItemModel>();
+
+                XmlNodeList nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Connections)[0].SelectNodes(CONF_ConnectionString);
+
+                foreach (XmlNode nod in nodes)
+                {
+                    var name = nod.Attributes[CONF_ConnectionString_Name].Value;
+                    var value = decrypt ? _encrypter.Decrypt(nod.Attributes[CONF_ConnectionString_Value].Value) : nod.Attributes[CONF_ConnectionString_Value].Value;
+                    var item = new AppConfigurationItemModel(AppConfigurationType.ConexionString, name, value);
+                    result.Add(item);                    
+                }
+
+                return result;
+            }
+            else
+            {
+                var result = new List<AppConfigurationItemModel>();
+
+                XmlNodeList nodes = _xml.DocumentElement.GetElementsByTagName(CONF_Parameters)[0].SelectNodes(CONF_Parameter);
+
+                foreach (XmlNode nod in nodes)
+                {
+                    var name = nod.Attributes[CONF_Parameter_Name].Value;
+                    var value =  decrypt ? _encrypter.Decrypt(nod.Attributes[CONF_Parameter_Value].Value) : nod.Attributes[CONF_Parameter_Value].Value;
+                    var item = new AppConfigurationItemModel(AppConfigurationType.Parameter, name, value);
+                    result.Add(item);                    
+                }
+
+                return result;
+            }
+        }
+
         /// <summary>
         /// Obtiene la cadena de conexion.
         /// </summary>
