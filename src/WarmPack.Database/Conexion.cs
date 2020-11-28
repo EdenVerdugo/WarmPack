@@ -779,7 +779,7 @@ namespace WarmPack.Database
                 
                 switch (this._conexionType)
                 {
-                    case ConexionType.MSSQLServer:
+                    case ConexionType.MSSQLServer:                        
                         result = true; //siempre regresar verdadero, ya que si hay una excepción no llegaria a este punto //((SqlDataReader)_readerRecordsets).HasRows;
                         break;
                         //case ConexionType.PostgreSQL:
