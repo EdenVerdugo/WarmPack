@@ -108,6 +108,21 @@ namespace WarmPack.Web.Rest
             }
         }
 
+        public async Task<ApiClientResult<T>> Post<T>(string route, object data)
+        {
+            using (var client = GetHttpClient())
+            {
+                using (var content = GetByteContent(data))
+                {
+                    var response = await client.PostAsync($"{_UrlBase}{route}", content);
+
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    return new ApiClientResult<T>(response, json); ;
+                }
+            }
+        }
+
         public async Task<ApiClientResult> PostFormUrlEncoded(string route, IEnumerable<KeyValuePair<string, string>> data)
         {
             using (var cliente = GetHttpClient())
@@ -186,8 +201,25 @@ namespace WarmPack.Web.Rest
             }
 
             return await client.Post(route, data);
-        }                
-                
+        }
+
+        public static async Task<ApiClientResult<T>> Post<T>(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        {
+            var client = new ApiClient("");
+
+            if (actionHeaders != null)
+            {
+                client.SetRequestHeaders(actionHeaders);
+            }
+
+            if (contentHeaders != null)
+            {
+                client.SetContentHeaders(contentHeaders);
+            }
+
+            return await client.Post<T>(route, data);
+        }
+
         public async Task<ApiClientResult> Delete(string route)
         {
             using (var client = GetHttpClient())

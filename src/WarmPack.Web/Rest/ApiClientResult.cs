@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace WarmPack.Web.Rest
 
             try
             {
-                Data = JObject.Parse(data);
+                Data = JToken.Parse(data);
             }
             catch(Exception)
             {
@@ -30,6 +31,26 @@ namespace WarmPack.Web.Rest
             
         }
         public HttpResponseMessage Response { get; set; }
-        public JObject Data { get; set; }
+        public JToken Data { get; set; }
+    }
+
+    public class ApiClientResult<T>
+    {
+        public ApiClientResult()
+        {
+
+        }
+
+        public ApiClientResult(HttpResponseMessage response, string data)
+        {
+            Response = response;
+
+            if (response.IsSuccessStatusCode)
+            {
+                Data = JsonConvert.DeserializeObject<T>(data);
+            }
+        }
+        public HttpResponseMessage Response { get; set; }
+        public T Data { get; set; }
     }
 }
