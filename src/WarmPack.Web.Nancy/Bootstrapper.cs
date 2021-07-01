@@ -2,6 +2,7 @@
 using Nancy;
 using Nancy.Authentication.JwtBearer;
 using Nancy.Bootstrapper;
+using Nancy.Configuration;
 using Nancy.TinyIoc;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,17 @@ using System.Threading.Tasks;
 
 namespace WarmPack.Web.Nancy
 {
-    public class Bootstrapper : DefaultNancyBootstrapper
+    public class WarmpackNancyBootstrapper : DefaultNancyBootstrapper
     {
+        public override void Configure(INancyEnvironment environment)
+        {
+            environment.Tracing(false, true);
+
+            base.Configure(environment);
+        }
+
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-
             base.ApplicationStartup(container, pipelines);
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -34,7 +41,7 @@ namespace WarmPack.Web.Nancy
 
             var configuration = new JwtBearerAuthenticationConfiguration
             {
-                TokenValidationParameters = tokenValidationParameters
+                TokenValidationParameters = tokenValidationParameters                
             };
 
             pipelines.EnableJwtBearerAuthentication(configuration);

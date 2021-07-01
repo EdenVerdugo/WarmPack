@@ -47,6 +47,7 @@ namespace WarmPack.Web.Nancy.Jwt
 
         public static TokenResponseModel GetJwt(UserModel usuario)
         {
+            var utc0 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             var now = DateTime.Now;
             const int expireMinutes = 518400;
 
@@ -57,7 +58,7 @@ namespace WarmPack.Web.Nancy.Jwt
                 new Claim("user", usuario.User),
                 new Claim("name", usuario.Name),                
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, now.ToUniversalTime().ToString(), ClaimValueTypes.Integer64)
+                new Claim(JwtRegisteredClaimNames.Iat, ((int)now.Subtract(utc0).TotalSeconds).ToString(), ClaimValueTypes.Integer64)
             };
 
             JwtExtraClaims?.Invoke(claims);
