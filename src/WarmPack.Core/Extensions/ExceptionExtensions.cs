@@ -39,5 +39,16 @@ namespace WarmPack.Extensions
 
             Utilities.Log.Write(msg);
         }
+
+        public static void Log(this Exception ex, string saveDirectory)
+        {
+            var msg = LogMessage(ex);
+
+            var pm = ex.TargetSite.GetParameters();
+
+            msg += "\r\n---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\r\n";
+
+            Utilities.Log.Write(msg, saveDirectory);
+        }
     }
 }

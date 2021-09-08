@@ -2,6 +2,7 @@
 using System.IO;
 using WarmPack.App;
 using WarmPack.Extensions;
+using WarmPack.Helpers;
 
 namespace WarmPack.Utilities
 {
@@ -10,9 +11,18 @@ namespace WarmPack.Utilities
         //public static readonly string LogPath = @"C:\Logs\" + Globals.ApplicationName + ".log";
         private string _Path = ""; 
 
-        private static string GetLogName()
+        private static string GetLogName(string directory = "")
         {
-            return string.Format($@"C:\Logs\[{ DateTime.Now.ToString("yyyy-MM-dd") }] {Globals.ApplicationName}.log");
+            if (string.IsNullOrEmpty(directory))
+            {
+                directory = @"C:\Logs\";                
+            }
+
+            DirectoryHelper.CreateDirectories(directory);
+
+            var fileName = $@"[{ DateTime.Now.ToString("yyyy - MM - dd") }] {Globals.ApplicationName}.log";            
+
+            return Path.Combine(directory, fileName);            
         }
 
         public Log()
@@ -34,6 +44,12 @@ namespace WarmPack.Utilities
         {
             _Write(message, GetLogName());            
         }
+
+        public static void Write(string message, string saveDirectory)
+        {
+            _Write(message, GetLogName(saveDirectory));
+        }
+
 
         private static void _Write(string message, string path)
         {
