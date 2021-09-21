@@ -20,7 +20,7 @@ namespace WarmPack.Utilities
 
             DirectoryHelper.CreateDirectories(directory);
 
-            var fileName = $@"[{ DateTime.Now.ToString("yyyy - MM - dd") }] {Globals.ApplicationName}.log";            
+            var fileName = $@"[{ DateTime.Now.ToString("yyyy-MM-dd") }] {Globals.ApplicationName}.log";            
 
             return Path.Combine(directory, fileName);            
         }

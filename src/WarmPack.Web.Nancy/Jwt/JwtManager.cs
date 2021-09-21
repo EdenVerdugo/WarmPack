@@ -37,15 +37,10 @@ namespace WarmPack.Web.Nancy.Jwt
 
             return new SymmetricSecurityKey(keyByteArray);
         }
-        
-        /// <summary>
-        /// Los datos extras que se necesiten guardar para el usuario van aqui
-        /// </summary>
-        public static Action<List<Claim>> JwtExtraClaims { get; set; }
-
+                
         public static IRefreshTokenManager RefreshTokenManager { get; set; }
 
-        public static TokenResponseModel GetJwt(UserModel usuario)
+        public static TokenResponseModel GetJwt(UserModel usuario, List<Claim> extraClaims = null)
         {
             var utc0 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             var now = DateTime.Now;
@@ -60,8 +55,8 @@ namespace WarmPack.Web.Nancy.Jwt
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, ((int)now.Subtract(utc0).TotalSeconds).ToString(), ClaimValueTypes.Integer64)
             };
-
-            JwtExtraClaims?.Invoke(claims);
+            
+            claims.AddRange(extraClaims);
 
             var jwt = new JwtSecurityToken(
                 issuer: ValidIssuer,
