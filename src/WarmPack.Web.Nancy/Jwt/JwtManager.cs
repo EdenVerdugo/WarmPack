@@ -80,5 +80,12 @@ namespace WarmPack.Web.Nancy.Jwt
 
             return response;
         }
+
+        public static IEnumerable<Claim> GetClaimsToken(string token)
+        {
+            var jst = new JwtSecurityTokenHandler().ReadJwtToken(token);
+
+            return jst.Claims;
+        }
     }
 }
