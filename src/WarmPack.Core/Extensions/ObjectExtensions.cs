@@ -19,10 +19,12 @@ namespace WarmPack.Extensions
             public override Encoding Encoding => Encoding.UTF8;
         }
 
-        public static string SerializeToXml<T>(T obj)
+        public static string SerializeToXml(this object obj)
         {
+            var type = obj.GetType();
+
             string xml = "";
-            var serializer = new XmlSerializer(typeof(T));
+            var serializer = new XmlSerializer(type);
 
             using (StringWriter writer = new Utf8StringWriter())
             {
@@ -32,8 +34,7 @@ namespace WarmPack.Extensions
 
             return xml.Replace("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n", "");
         }
-
-
+        
         public static List<T> ToList<T>(this object obj)
         {
             return obj as List<T>;
@@ -44,6 +45,7 @@ namespace WarmPack.Extensions
             return (T)Convert.ChangeType(obj, typeof(T));
         }
 
+        [Obsolete("Metodo obsoleto dar preferencia al metodo SerializeToXml.")]
         public static string ToXml2(this object obj)
         {
             return ToXml(obj);
@@ -54,16 +56,17 @@ namespace WarmPack.Extensions
         /// </summary>
         /// <param name="obj">Objeto a serializar a xml</param>
         /// <returns>Regresa un string que representa el contenido de un xml</returns>
+        [Obsolete("Metodo obsoleto dar preferencia al metodo SerializeToXml.")]
         public static string ToXml(this object obj)
         {
             return ToXml(obj, string.Empty, ObjectPropertiesAs.Attributes);
         }
-
+        [Obsolete("Metodo obsoleto dar preferencia al metodo SerializeToXml.")]
         public static string ToXml(this object obj, ObjectPropertiesAs propertiesAs)
         {
             return ToXml(obj, string.Empty, propertiesAs);
         }
-
+        [Obsolete("Metodo obsoleto dar preferencia al metodo SerializeToXml.")]
         public static string ToXml(this object obj, string rootName)
         {
             return ToXml(obj, rootName, ObjectPropertiesAs.Attributes);
@@ -74,7 +77,7 @@ namespace WarmPack.Extensions
         //    return "";
         //}
 
-
+        [Obsolete("Metodo obsoleto dar preferencia al metodo SerializeToXml.")]
         public static string ToXml(this object obj, string rootName, ObjectPropertiesAs propertiesAs)
         {
             try
