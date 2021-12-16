@@ -76,7 +76,7 @@ namespace WarmPack.Web.Nancy.Jwt
                 RefreshToken = Guid.NewGuid().ToString()
             };
 
-            RefreshTokenManager?.Save(new TokenItemModel(usuario, response.AccessToken, response.RefreshToken, response.ExpiresAt));
+            response.AccessId = (string)RefreshTokenManager?.Save(new TokenItemModel(usuario, response.AccessToken, response.RefreshToken, response.ExpiresAt));            
 
             return response;
         }

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Eden Rodrigo Verdugo Garcia")]
 [assembly: AssemblyProduct("WarmPack.Core")]
-[assembly: AssemblyCopyright("Copyright © Eden Verdugo")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace WarmPack.Extensions
 {
@@ -11,6 +14,26 @@ namespace WarmPack.Extensions
     //              * Se agrega la opcion de serializar las propiedades como atributos o elementos del xml.
     public static class ObjectExtensions
     {
+        private class Utf8StringWriter : StringWriter
+        {
+            public override Encoding Encoding => Encoding.UTF8;
+        }
+
+        public static string SerializeToXml<T>(T obj)
+        {
+            string xml = "";
+            var serializer = new XmlSerializer(typeof(T));
+
+            using (StringWriter writer = new Utf8StringWriter())
+            {
+                serializer.Serialize(writer, obj);
+                xml = writer.ToString();
+            }
+
+            return xml.Replace("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n", "");
+        }
+
+
         public static List<T> ToList<T>(this object obj)
         {
             return obj as List<T>;

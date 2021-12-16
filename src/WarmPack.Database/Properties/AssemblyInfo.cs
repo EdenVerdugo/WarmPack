@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("WarmPack.Database")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Contiene una serie de clases que facilitan el manejo de la base de datos. Necesita WarmPack.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP Inc.")]
+[assembly: AssemblyCompany("Eden Rodrigo Verdugo Garcia")]
 [assembly: AssemblyProduct("WarmPack.Database")]
-[assembly: AssemblyCopyright("Copyright © HP Inc. 2020")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Eden Verdugo")]
+[assembly: AssemblyTrademark(".")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

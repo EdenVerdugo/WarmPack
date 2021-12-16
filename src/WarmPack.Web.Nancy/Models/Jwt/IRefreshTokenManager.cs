@@ -4,8 +4,8 @@ namespace WarmPack.Web.Nancy.Jwt
 {
     public interface IRefreshTokenManager
     {
-        void Save(TokenItemModel token);
-        void Delete(string refreshToken);
-        TokenItemModel Find(string refreshToken);
+        object Save(ITokenResponseModel token);
+        object Delete(object param);
+        ITokenResponseModel Find(object param);
     }
 }

@@ -173,11 +173,31 @@ namespace WarmPack.Database
 
             var resultParameter = parameters?.Parameters?.FirstOrDefault(p => p.Name.ToLower() == "@result" || p.Name.ToLower() == "@presult" || p.Name.ToLower() == "@resultado" || p.Name.ToLower() == "@presultado");
             if (resultParameter != null)
+            {
+                if(resultParameter.Value.ToString() == "")
+                {
+                    throw new Exception($"The '{resultParameter.Name}' parameter was not initialized in the stored procedure");
+                }
+
                 result.Value = new Castable(resultParameter.Value).ToBoolean();
+            }                
 
             var messageParameter = parameters?.Parameters?.FirstOrDefault(p => p.Name.ToLower() == "@msg" || p.Name.ToLower() == "@pmsg" || p.Name.ToLower() == "@message" || p.Name.ToLower() == "@pmessage" || p.Name.ToLower() == "@mensaje" || p.Name.ToLower() == "@pmensaje");
             if (messageParameter != null)
+            {
                 result.Message = new Castable(messageParameter.Value).ToString();
+            }                
+
+            var codeParameter = parameters?.Parameters?.FirstOrDefault(p => p.Name.ToLower() == "@codigo" || p.Name.ToLower() == "@pcodigo" || p.Name.ToLower() == "@code" || p.Name.ToLower() == "@pcode");
+            if (codeParameter != null)
+            {
+                if(codeParameter.Value.ToString() == "")
+                {
+                    throw new Exception($"The '{codeParameter.Name}' parameter was not initialized in the stored procedure");
+                }
+
+                result.Code = new Castable(codeParameter.Value).ToInt32();
+            }                
 
             return result;
         }
@@ -582,6 +602,24 @@ namespace WarmPack.Database
             return result;
         }
 
+        public Result<T> ExecuteWithResultsToObject<T>(string query)
+        {
+            return ExecuteWithResultsToObject<T>(query, null);
+        }
+
+        public Result<T> ExecuteWithResultsToObject<T>(string query, ConexionParameters parameters)
+        {
+            var results = ExecuteWithResults<T>(query, parameters);
+
+            return new Result<T>()
+            {
+                Value = results.Value,
+                Message = results.Message,
+                Code = results.Code,
+                Data = results.Data.FirstOrDefault()
+            };
+        }
+
         public Result<List<T>> ExecuteWithResults<T>(string query, out List<T> results)
         {
             var r = ExecuteWithResults<T>(query);
@@ -666,7 +704,7 @@ namespace WarmPack.Database
             result.Data = lst;
 
             return result;
-        }
+        }        
 
         public void ExecuteWithResults(string query, Action<ConexionCastableRow> action)
         {
@@ -794,6 +832,13 @@ namespace WarmPack.Database
             }
 
             return result;
+        }
+
+        public T RecordsetsResultsToObject<T>()
+        {
+            var r = RecordsetsResults<T>();
+
+            return r.FirstOrDefault();
         }
 
         public List<T> RecordsetsResults<T>()
