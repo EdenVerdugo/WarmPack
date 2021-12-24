@@ -100,10 +100,9 @@
     <Compile Include="Utilities\MailSenderAttachmentImage.cs" />
     <Compile Include="Utilities\MailSenderAttachmentList.cs" />
     <Compile Include="Utilities\ScreenCapture.cs" />
+    <Compile Include="Web\FtpClient.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Web\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
