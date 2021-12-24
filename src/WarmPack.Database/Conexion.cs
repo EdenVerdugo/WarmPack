@@ -40,6 +40,8 @@ namespace WarmPack.Database
 
         public ConexionSchema DbSchema { get; set; }
 
+        public bool IsMoreRecordsets { get; set; }
+
         public delegate void ConexionInfoMessageHandler(SqlInfoMessageEventArgs args);
 
         public event ConexionInfoMessageHandler InfoMessage;
@@ -813,12 +815,12 @@ namespace WarmPack.Database
                     }
                 }
 
-                _readerRecordsets = _commandRecordsets.ExecuteReader();
-                
+                _readerRecordsets = _commandRecordsets.ExecuteReader();                
+
                 switch (this._conexionType)
                 {
-                    case ConexionType.MSSQLServer:                        
-                        result = true; //siempre regresar verdadero, ya que si hay una excepción no llegaria a este punto //((SqlDataReader)_readerRecordsets).HasRows;
+                    case ConexionType.MSSQLServer:                                                
+                        result = ((SqlDataReader)_readerRecordsets).HasRows;
                         break;
                         //case ConexionType.PostgreSQL:
                         //    result = ((PgSqlDataReader)_readerRecordsets).HasRows;
@@ -829,6 +831,11 @@ namespace WarmPack.Database
             catch (Exception ex)
             {
                 throw new Exception(ThrowExceptionExecuteMessage + ex.Message, ex);
+            }
+
+            if (!result)
+            {
+                IsMoreRecordsets = _readerRecordsets.NextResult();
             }
 
             return result;
@@ -850,7 +857,9 @@ namespace WarmPack.Database
 
             var lst = ResultsInDataReader<T>(ref _readerRecordsets);
 
-            if (!_readerRecordsets.NextResult())
+            IsMoreRecordsets = _readerRecordsets.NextResult();
+
+            if (!IsMoreRecordsets)
             {
                 _readerRecordsets.Close();
 
@@ -870,9 +879,8 @@ namespace WarmPack.Database
                 _readerRecordsets = null;
 
                 ConexionClose();
-
             }
-
+            
             return lst;
         }
 
@@ -888,7 +896,9 @@ namespace WarmPack.Database
                 action(new ConexionCastableRow(_readerRecordsets));
             }
 
-            if (!_readerRecordsets.NextResult())
+            IsMoreRecordsets = _readerRecordsets.NextResult();
+
+            if (!IsMoreRecordsets)
             {
                 _readerRecordsets.Close();
 
@@ -913,7 +923,7 @@ namespace WarmPack.Database
 
         private List<T> ResultsInDataReader<T>(ref IDataReader reader)
         {
-            List<T> lst = new List<T>();
+            List<T> lst = null; //new List<T>();
             string currentColumn = null;
 
             try
@@ -998,15 +1008,13 @@ namespace WarmPack.Database
                         }
                     }
                     
-                    lst.Add(obj);
+                    lst?.Add(obj);
                 }
             }
             catch(Exception ex)
             {
                 throw new Exception($"Falló al serializar la columna '{currentColumn}'.\n{ex.Message}", ex);                
-            }
-
-            
+            }            
 
             return lst;
         }
