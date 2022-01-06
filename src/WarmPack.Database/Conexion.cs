@@ -923,7 +923,7 @@ namespace WarmPack.Database
 
         private List<T> ResultsInDataReader<T>(ref IDataReader reader)
         {
-            List<T> lst = null; //new List<T>();
+            List<T> lst = new List<T>();
             string currentColumn = null;
 
             try
