@@ -21,9 +21,17 @@ namespace WarmPack.Core.Web
             _password = password;
         }
 
-        public FtpWebResponse Upload(Uri filePath)
-        {   
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create( _ftp + "/" + filePath.Segments.Last());
+        public FtpWebResponse Upload(Uri filePath, string folder = "")
+        {
+            if(folder != "")
+            {
+                if (!folder.EndsWith("/"))
+                {
+                    folder += "/";
+                }
+            }
+
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create( _ftp + "/" + folder + filePath.Segments.Last());
             request.Method = WebRequestMethods.Ftp.UploadFile;
             
             request.Credentials = new NetworkCredential(_user, _password);
