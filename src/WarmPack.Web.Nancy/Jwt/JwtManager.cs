@@ -55,8 +55,11 @@ namespace WarmPack.Web.Nancy.Jwt
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, ((int)now.Subtract(utc0).TotalSeconds).ToString(), ClaimValueTypes.Integer64)
             };
-            
-            claims.AddRange(extraClaims);
+
+            if (extraClaims != null)
+            {
+                claims.AddRange(extraClaims);
+            }            
 
             var jwt = new JwtSecurityToken(
                 issuer: ValidIssuer,
@@ -76,7 +79,7 @@ namespace WarmPack.Web.Nancy.Jwt
                 RefreshToken = Guid.NewGuid().ToString()
             };
 
-            response.AccessId = (string)RefreshTokenManager?.Save(new TokenItemModel(usuario, response.AccessToken, response.RefreshToken, response.ExpiresAt));            
+            response.AccessId = RefreshTokenManager?.Save(new TokenItemModel(usuario, response.AccessToken, response.RefreshToken, response.ExpiresAt));            
 
             return response;
         }

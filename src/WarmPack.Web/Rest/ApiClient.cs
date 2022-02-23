@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace WarmPack.Web.Rest
 {
@@ -68,7 +69,9 @@ namespace WarmPack.Web.Rest
         {
             using (var client = GetHttpClient())
             {
-                var response = await client.GetAsync($"{_UrlBase}{route}");
+
+                var rou = _UrlBase + Uri.EscapeUriString(route);
+                var response = await client.GetAsync(new Uri(rou));
 
                 var json = await response.Content.ReadAsStringAsync();
 

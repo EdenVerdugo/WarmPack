@@ -31,7 +31,7 @@ namespace WarmPack.Web.Rest
             
         }
         public HttpResponseMessage Response { get; set; }
-        public JToken Data { get; set; }
+        public JToken Data { get; set; }        
     }
 
     public class ApiClientResult<T>
