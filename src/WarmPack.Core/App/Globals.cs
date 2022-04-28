@@ -38,6 +38,7 @@ namespace WarmPack.App
         {
             get
             {
+                //return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
                 return Assembly.GetEntryAssembly().GetName().Version.ToString();
             }
         }
