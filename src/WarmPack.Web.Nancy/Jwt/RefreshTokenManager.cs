@@ -10,7 +10,7 @@ namespace WarmPack.Web.Nancy.Jwt
     public class DefaultRefreshTokenManager : IRefreshTokenManager
     {
         private Func<object, ITokenResponseModel> _Find;
-        private Func<object> _Save;
+        private Func<string> _Save;
         private Func<object> _Delete;
 
         public DefaultRefreshTokenManager()
@@ -18,7 +18,7 @@ namespace WarmPack.Web.Nancy.Jwt
 
         }
 
-        public DefaultRefreshTokenManager(Func<object, ITokenResponseModel> find, Func<object> save, Func<object> delete)
+        public DefaultRefreshTokenManager(Func<object, ITokenResponseModel> find, Func<string> save, Func<object> delete)
         {
             _Find = find;
             _Save = save;
@@ -40,7 +40,7 @@ namespace WarmPack.Web.Nancy.Jwt
             return new TokenItemModel();
         }
 
-        public object Save(ITokenResponseModel token)
+        public string Save(ITokenResponseModel token)
         {
             return _Save?.Invoke();            
         }
