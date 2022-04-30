@@ -73,7 +73,7 @@ namespace WarmPack.Web.Rest
                 var rou = _UrlBase + Uri.EscapeUriString(route);
                 var response = await client.GetAsync(new Uri(rou));
 
-                var json = await response.Content.ReadAsStringAsync();
+                var json = await response.Content.ReadAsStringAsync();                
 
                 return new ApiClientResult(response, json);
             }
