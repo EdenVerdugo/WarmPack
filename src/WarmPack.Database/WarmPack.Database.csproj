@@ -49,6 +49,7 @@
     <Compile Include="ConexionDbType.cs" />
     <Compile Include="ConexionParameter.cs" />
     <Compile Include="ConexionParameters.cs" />
+    <Compile Include="ConexionTools.cs" />
     <Compile Include="ConexionType.cs" />
     <Compile Include="Helpers\ConexionCastableRow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
