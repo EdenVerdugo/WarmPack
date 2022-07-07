@@ -647,7 +647,7 @@ namespace WarmPack.Core.Helpers
             {
                 case FileArchiver.Rar:
                     archiverSource = @"C:\Program Files\WinRAR\WinRar.exe";
-                    argumentos = $@"a -r { fileInfo.FullName.Replace(fileInfo.Extension, ".rar") } {fileName}";
+                    argumentos = $@"a { fileInfo.FullName.Replace(fileInfo.Extension, ".rar") } {fileInfo.Name}";
                     break;
                 case FileArchiver.Zip:
                     Zip(fileName);
@@ -664,13 +664,50 @@ namespace WarmPack.Core.Helpers
             }
 
             var startInfo = new ProcessStartInfo();
+            startInfo.WorkingDirectory = fileInfo.DirectoryName;
             startInfo.FileName = archiverSource;
             startInfo.Arguments = argumentos;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
 
             Process.Start(startInfo).WaitForExit();
+        }
 
+        public static void Unzip(string fileName, FileArchiver fileArchiver)
+        {
+            string archiverSource = "";
+            string argumentos = "";
+
+            var fileInfo = new FileInfo(fileName);
+
+            switch (fileArchiver)
+            {
+                case FileArchiver.Rar:
+                    archiverSource = @"C:\Program Files\WinRAR\WinRar.exe";
+                    argumentos = $@"x { fileInfo.FullName.Replace(fileInfo.Extension, ".rar") }";
+                    break;
+                case FileArchiver.Zip:
+                    //Zip(fileName);
+                    break;
+                default:
+                    archiverSource = @"C:\Program Files\7-Zip\7z.exe";
+                    argumentos = $@"e { fileInfo.FullName.Replace(fileInfo.Extension, ".7z") }";
+                    break;
+            }
+
+            if (!File.Exists(archiverSource))
+            {
+                throw new Exception($"No se puede comprimir el archivo porque encuentra instalado el exe en la carpeta { archiverSource }");
+            }
+
+            var startInfo = new ProcessStartInfo();
+            startInfo.WorkingDirectory = fileInfo.DirectoryName;
+            startInfo.FileName = archiverSource;
+            startInfo.Arguments = argumentos;
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+
+            Process.Start(startInfo).WaitForExit();
         }
 
         public static void Zip(string fileName, ProcessStartInfo otherCompressStartInfo)
