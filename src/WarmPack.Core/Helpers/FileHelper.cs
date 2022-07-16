@@ -636,6 +636,13 @@ namespace WarmPack.Core.Helpers
             }
         }
 
+        public static void UnZip(string fileName)
+        {
+            var fileInfo = new FileInfo(fileName);
+
+            ZipFile.ExtractToDirectory(fileName, fileInfo.DirectoryName);
+        }
+
         public static void Zip(string fileName, FileArchiver fileArchiver)
         {
             string archiverSource = "";
@@ -646,7 +653,7 @@ namespace WarmPack.Core.Helpers
             switch (fileArchiver)
             {
                 case FileArchiver.Rar:
-                    archiverSource = @"C:\Program Files\WinRAR\WinRar.exe";
+                    archiverSource = @"C:\Program Files\WinRAR\Rar.exe";
                     argumentos = $@"a { fileInfo.FullName.Replace(fileInfo.Extension, ".rar") } {fileInfo.Name}";
                     break;
                 case FileArchiver.Zip:
@@ -683,15 +690,15 @@ namespace WarmPack.Core.Helpers
             switch (fileArchiver)
             {
                 case FileArchiver.Rar:
-                    archiverSource = @"C:\Program Files\WinRAR\WinRar.exe";
-                    argumentos = $@"x { fileInfo.FullName.Replace(fileInfo.Extension, ".rar") }";
+                    archiverSource = @"C:\Program Files\WinRAR\Rar.exe";
+                    argumentos = $@"x { fileInfo.FullName.Replace(fileInfo.Extension, ".rar") } -y";
                     break;
                 case FileArchiver.Zip:
-                    //Zip(fileName);
+                    UnZip(fileName);
                     break;
                 default:
                     archiverSource = @"C:\Program Files\7-Zip\7z.exe";
-                    argumentos = $@"e { fileInfo.FullName.Replace(fileInfo.Extension, ".7z") }";
+                    argumentos = $@"e { fileInfo.FullName.Replace(fileInfo.Extension, ".7z") } -y";
                     break;
             }
 
@@ -710,19 +717,19 @@ namespace WarmPack.Core.Helpers
             Process.Start(startInfo).WaitForExit();
         }
 
-        public static void Zip(string fileName, ProcessStartInfo otherCompressStartInfo)
-        {
-            if (otherCompressStartInfo == null)
-            {
-                Zip(fileName, $"{fileName}.zip");
-            }
-            else
-            {
-                otherCompressStartInfo.UseShellExecute = false;
-                otherCompressStartInfo.CreateNoWindow = true;
-                Process.Start(otherCompressStartInfo).WaitForExit();
-            }
-        }
+        //public static void Zip(string fileName, ProcessStartInfo otherCompressStartInfo)
+        //{
+        //    if (otherCompressStartInfo == null)
+        //    {
+        //        Zip(fileName, $"{fileName}.zip");
+        //    }
+        //    else
+        //    {
+        //        otherCompressStartInfo.UseShellExecute = false;
+        //        otherCompressStartInfo.CreateNoWindow = true;
+        //        Process.Start(otherCompressStartInfo).WaitForExit();
+        //    }
+        //}
 
     }    
 }
