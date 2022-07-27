@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -79,6 +80,71 @@ namespace WarmPack.Web.Rest
             }
         }
 
+        public async Task<ApiClientResult<T>> Get<T>(string route)
+        {
+            using (var client = GetHttpClient())
+            {
+
+                var rou = _UrlBase + Uri.EscapeUriString(route);
+                var response = await client.GetAsync(new Uri(rou));
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                return new ApiClientResult<T>(response, json);
+            }
+        }
+
+        public ApiClientResult GetSync(string route)
+        {
+            ApiClientResult result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Get(route);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
+        }
+
+        public ApiClientResult GetSync(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        {
+            ApiClientResult result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Get(route, actionHeaders, contentHeaders);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
+        }
+
+        public ApiClientResult<T> GetSync<T>(string route)
+        {
+            ApiClientResult<T> result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Get<T>(route);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
+        }
+
         public static async Task<ApiClientResult> Get(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             var client = new ApiClient("");
@@ -94,6 +160,40 @@ namespace WarmPack.Web.Rest
             }
 
             return await client.Get(route);
+        }
+
+        public static async Task<ApiClientResult<T>> Get<T>(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        {
+            var client = new ApiClient("");
+
+            if (actionHeaders != null)
+            {
+                client.SetRequestHeaders(actionHeaders);
+            }
+
+            if (contentHeaders != null)
+            {
+                client.SetContentHeaders(contentHeaders);
+            }
+
+            return await client.Get<T>(route);
+        }
+
+        public ApiClientResult<T> GetSync<T>(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        {
+            ApiClientResult<T> result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Get<T>(route, actionHeaders, contentHeaders);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
         }
 
         public async Task<ApiClientResult> Post(string route, object data)
@@ -126,6 +226,40 @@ namespace WarmPack.Web.Rest
             }
         }
 
+        public ApiClientResult PostSync(string route, object data)
+        {
+            ApiClientResult result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Post(route, data);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
+        }
+
+        public ApiClientResult<T> PostSync<T>(string route, object data)
+        {
+            ApiClientResult<T> result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Post<T>(route, data);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
+        }
+
         public async Task<ApiClientResult> PostFormUrlEncoded(string route, IEnumerable<KeyValuePair<string, string>> data)
         {
             using (var cliente = GetHttpClient())
@@ -143,6 +277,59 @@ namespace WarmPack.Web.Rest
                     return new ApiClientResult(response, r.Result);
                 }
             }
+        }
+
+        public async Task<ApiClientResult<T>> PostFormUrlEncoded<T>(string route, IEnumerable<KeyValuePair<string, string>> data)
+        {
+            using (var cliente = GetHttpClient())
+            {
+                using (var content = new FormUrlEncodedContent(data))
+                {
+                    content.Headers.Clear();
+                    content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+
+
+                    var response = await cliente.PostAsync($"{_UrlBase}{route}", content);
+
+                    var r = response.Content?.ReadAsStringAsync();
+
+                    return new ApiClientResult<T>(response, r.Result);
+                }
+            }
+        }
+
+        public ApiClientResult PostFormUrlEncodedSync(string route, IEnumerable<KeyValuePair<string, string>> data)
+        {
+            ApiClientResult result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await PostFormUrlEncoded(route, data);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
+        }
+
+        public ApiClientResult<T> PostFormUrlEncodedSync<T>(string route, IEnumerable<KeyValuePair<string, string>> data)
+        {
+            ApiClientResult<T> result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await PostFormUrlEncoded<T>(route, data);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
         }
 
         public async Task<ApiClientResult> PostMultipartFormData(string route, params FormDataContent[] formDataContents)
@@ -223,6 +410,40 @@ namespace WarmPack.Web.Rest
             return await client.Post<T>(route, data);
         }
 
+        public ApiClientResult<T> PostSync<T>(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        {
+            ApiClientResult<T> result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Post<T>(route, data, actionHeaders, contentHeaders);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
+        }
+
+        public ApiClientResult PostSync(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        {
+            ApiClientResult result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Post(route, data, actionHeaders, contentHeaders);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
+        }
+
         public async Task<ApiClientResult> Delete(string route)
         {
             using (var client = GetHttpClient())
@@ -233,6 +454,23 @@ namespace WarmPack.Web.Rest
 
                 return new ApiClientResult(response, json);
             }
+        }
+
+        public ApiClientResult DeleteSync(string route)
+        {
+            ApiClientResult result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Delete(route);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
         }
 
         public static async Task<ApiClientResult> Delete(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
@@ -251,6 +489,7 @@ namespace WarmPack.Web.Rest
 
             return await client.Delete(route);
         }
+
         public async Task<ApiClientResult> Put(string route, object data)
         {
             using (var client = GetHttpClient())
@@ -264,6 +503,23 @@ namespace WarmPack.Web.Rest
                     return new ApiClientResult(response, json);
                 }
             }
+        }
+
+        public ApiClientResult PutSync(string route, object data)
+        {
+            ApiClientResult result = null;
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+            Task.Run(async () =>
+            {
+                result = await Put(route, data);
+
+                waitHandle.Set();
+            });
+
+            waitHandle.WaitOne();
+
+            return result;
         }
 
         public static async Task<ApiClientResult> Put(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)

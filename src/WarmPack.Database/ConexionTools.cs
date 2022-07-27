@@ -84,6 +84,7 @@ ORDER BY d.name";
                 throw new Exception("No se encontró la base de datos");
             }
 
+            
             db.Rename(dbNewName);
         }
 
@@ -134,7 +135,7 @@ Si es un problema de incompatibilidad con el framework trata de que en el archiv
             {
                 var script = new System.IO.FileInfo(fileName).OpenText().ReadToEnd();
 
-                var result = ExecuteScript(fileName, false) as int?;
+                var result = ExecuteScript(script, false) as int?;
 
                 return result.Value;
             }
