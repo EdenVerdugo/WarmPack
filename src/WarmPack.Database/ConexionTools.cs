@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WarmPack.Core.Helpers;
 using WarmPack.Data;
@@ -57,6 +58,33 @@ ORDER BY d.name";
             });
 
             return databases;
+        }
+
+
+        public void DatabaseShrink(string dbName, int percent = 0, ToolsShrinkMethod shrinkMethod = ToolsShrinkMethod.TruncateOnly)
+        {
+            var server = new Server(new ServerConnection(sqlConnection));
+            var db = server.Databases[dbName];
+
+            if (db == null)
+            {
+                throw new Exception("No se encontró la base de datos");
+            }
+
+            db.Shrink(percent, (ShrinkMethod)shrinkMethod);
+        }
+
+        public void DatabaseRename(string dbName, string dbNewName)
+        {
+            var server = new Server(new ServerConnection(sqlConnection));
+            var db = server.Databases[dbName];
+
+            if(db == null)
+            {
+                throw new Exception("No se encontró la base de datos");
+            }
+
+            db.Rename(dbNewName);
         }
 
         private object ExecuteScript(string script, bool withResults)
@@ -151,7 +179,7 @@ Si es un problema de incompatibilidad con el framework trata de que en el archiv
             _conexion.Execute(query);
         }
 
-        public void CreateDatabaseBackup(string dbName, string backupFileName)
+        public void DatabaseCreateBackup(string dbName, string backupFileName)
         {
             if (System.IO.File.Exists(backupFileName))
             {
@@ -184,78 +212,80 @@ GO
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dbName">Nombre de la base de datos</param>
-        /// <param name="srcBak">Ruta del archivo .bak</param>
-        /// <param name="mdf">Ruta para el archivo de la base de datos (mdf)</param>
-        /// <param name="ldf">Ruta para el archivo log (ldf)</param>
-        public void RestoreDatabaseBackup(string dbName, string srcBak, string mdfName, string ldfName)
-        {
-            string guid = Guid.NewGuid().ToString();
+//        /// <summary>
+//        /// 
+//        /// </summary>
+//        /// <param name="dbName">Nombre de la base de datos</param>
+//        /// <param name="srcBak">Ruta del archivo .bak</param>
+//        /// <param name="mdf">Ruta para el archivo de la base de datos (mdf)</param>
+//        /// <param name="ldf">Ruta para el archivo log (ldf)</param>
+//        public void RestoreDatabaseBackup(string dbName, string srcBak, string mdfName, string ldfName)
+//        {
+//            string guid = Guid.NewGuid().ToString();
 
 
-            //var query = $@"USE MASTER RESTORE DATABASE {dbName} FROM DISK = '{srcBak}' WITH RECOVERY, MOVE '{dbName}' TO '{mdf}', MOVE '{dbName}_log' TO '{ldf}', REPLACE";
-            //_conexion.Execute(query);
+//            //var query = $@"USE MASTER RESTORE DATABASE {dbName} FROM DISK = '{srcBak}' WITH RECOVERY, MOVE '{dbName}' TO '{mdf}', MOVE '{dbName}_log' TO '{ldf}', REPLACE";
+//            //_conexion.Execute(query);
 
-            var srcDb = _conexion.ExecuteScalar("SELECT SERVERPROPERTY('InstanceDefaultDataPath')").ToString();
+//            var srcDb = _conexion.ExecuteScalar("SELECT SERVERPROPERTY('InstanceDefaultDataPath')").ToString();
 
 
-            string dbNameCopia = dbName + "Copia" + DateTime.Now.ToString("yyyyMMddhhmmss");
-            string dbNameBak = dbName + "Backup" + DateTime.Now.ToString("yyyyMMddhhmmss");
-            var script = $@"
-USE MASTER
+//            string dbNameCopia = dbName + "Copia" + DateTime.Now.ToString("yyyyMMddhhmmss");
+//            string dbNameBak = dbName + "Backup" + DateTime.Now.ToString("yyyyMMddhhmmss");
+//            var script = $@"
+//USE MASTER
 
-GO
+//GO
 
-CREATE DATABASE {dbNameCopia}
-ON
-(NAME = '{mdfName}',FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.mdf')
-LOG ON
-(NAME = '{ldfName}',FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.ldf') 
+//CREATE DATABASE {dbNameCopia}
+//ON
+//(NAME = '{mdfName}',FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.mdf')
+//LOG ON
+//(NAME = '{ldfName}',FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.ldf') 
 	
-GO
+//GO
 
-RESTORE DATABASE {dbNameCopia} 
-FROM DISK = '{srcBak}' 
-WITH RECOVERY, 
-MOVE '{dbName}' TO 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.mdf', 
-MOVE '{dbName}_log' TO 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.ldf',
-REPLACE
+//RESTORE DATABASE {dbNameCopia} 
+//FROM DISK = '{srcBak}' 
+//WITH RECOVERY, 
+//MOVE '{dbName}' TO 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.mdf', 
+//MOVE '{dbName}_log' TO 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.ldf',
+//REPLACE
 
-IF EXISTS(SELECT * FROM sys.databases d WHERE d.name = '{dbName}')
-BEGIN
+//IF EXISTS(SELECT * FROM sys.databases d WHERE d.name = '{dbName}')
+//BEGIN
 	
-    ALTER DATABASE { dbName } 
-    SET SINGLE_USER 
-    WITH ROLLBACK IMMEDIATE    
+//    ALTER DATABASE { dbName } 
+//    SET SINGLE_USER 
+//    WITH ROLLBACK IMMEDIATE    
 
-	EXEC sys.sp_renamedb '{ dbName }', '{ dbNameBak }'
+//	EXEC sys.sp_renamedb '{ dbName }', '{ dbNameBak }'
 
-    ALTER DATABASE { dbNameBak } 
-    SET MULTI_USER 
-END
+//    ALTER DATABASE { dbNameBak } 
+//    SET MULTI_USER 
+//END
 
-GO
+//GO
 
 
-ALTER DATABASE { dbNameCopia } 
-SET SINGLE_USER 
-WITH ROLLBACK IMMEDIATE    
+//ALTER DATABASE { dbNameCopia } 
+//SET SINGLE_USER 
+//WITH ROLLBACK IMMEDIATE    
 
-EXEC sys.sp_renamedb '{ dbNameCopia }', '{ dbName }'
+//EXEC sys.sp_renamedb '{ dbNameCopia }', '{ dbName }'
 
-ALTER DATABASE { dbName } 
-SET MULTI_USER 
+//ALTER DATABASE { dbName } 
+//SET MULTI_USER 
 
-";
-            ExecuteScript(script, false);
+//";
+//            ExecuteScript(script, false);
 
-        }
+//        }
 
-        public void RestoreDatabaseBackupEx(string dbName, string srcBackup)
+        public AutoResetEvent DatabaseRestoreBackup(string dbName, string srcBackup, Action<RestoreDatabaseBackupEventArgs> onPercentComplete = null, Action<SqlError> onComplete = null)
         {
+            AutoResetEvent waitHandle = new AutoResetEvent(false);
+
             string guid = Guid.NewGuid().ToString();
 
             var server = new Server(new ServerConnection(sqlConnection));
@@ -285,20 +315,49 @@ SET MULTI_USER
             restoreDB.NoRecovery = false;
 
             // you can Wire up events for progress monitoring */
-            restoreDB.PercentComplete += RestoreDB_PercentComplete;
-            restoreDB.Complete += RestoreDB_Complete;
+            restoreDB.PercentComplete += (s, e) =>
+            {
+                onPercentComplete?.Invoke(new RestoreDatabaseBackupEventArgs(e.Error, e.Message, e.Percent));
+            };
+
+            restoreDB.Complete += (s, e) =>
+            {
+                onComplete?.Invoke(e.Error);
+
+                waitHandle.Set();
+            };
 
             restoreDB.SqlRestore(server);
-        }
 
-        private void RestoreDB_Complete(object sender, ServerMessageEventArgs e)
-        {
-            var status = e;
-        }
-
-        private void RestoreDB_PercentComplete(object sender, PercentCompleteEventArgs e)
-        {
-            var status = e;
-        }
+            return waitHandle;
+        }        
     }
+}
+
+
+public class RestoreDatabaseBackupEventArgs
+{
+    public SqlError Error { get; set; }
+    public string Message { get; set; }
+    public int Percent { get; set; }
+
+    public RestoreDatabaseBackupEventArgs()
+    {
+        
+    }
+
+    public RestoreDatabaseBackupEventArgs(SqlError error, string message, int percent)
+    {
+        Error = error;
+        Message = message;
+        Percent = percent;
+    }
+}
+
+public enum ToolsShrinkMethod
+{
+    Default,
+    NoTruncate,
+    TruncateOnly,
+    EmptyFile
 }
