@@ -83,9 +83,21 @@ ORDER BY d.name";
             {
                 throw new Exception("No se encontró la base de datos");
             }
-
             
             db.Rename(dbNewName);
+        }
+
+        public void DatabaseDrop(string dbName)
+        {
+            var server = new Server(new ServerConnection(sqlConnection));
+            var db = server.Databases[dbName];
+
+            if (db == null)
+            {
+                throw new Exception("No se encontró la base de datos");
+            }
+
+            db.Drop();
         }
 
         private object ExecuteScript(string script, bool withResults)

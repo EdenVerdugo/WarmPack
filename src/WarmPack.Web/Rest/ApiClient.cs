@@ -18,9 +18,13 @@ namespace WarmPack.Web.Rest
         private Action<HttpRequestHeaders> _ActionHeaders;
         private Action<HttpContentHeaders> _ContentHeaders;
 
+        public TimeSpan Timeout;
+
         public ApiClient(string urlBase)
         {
             this._UrlBase = urlBase;
+
+            Timeout = TimeSpan.FromSeconds(30);
         }
 
         private byte[] GetJsonBytes(object data)
@@ -61,6 +65,8 @@ namespace WarmPack.Web.Rest
         {
             var client = new HttpClient();
 
+            client.Timeout = Timeout;
+
             _ActionHeaders?.Invoke(client.DefaultRequestHeaders);
 
             return client;
@@ -70,13 +76,13 @@ namespace WarmPack.Web.Rest
         {
             using (var client = GetHttpClient())
             {
+                var rou = _UrlBase + Uri.EscapeUriString(route);                
 
-                var rou = _UrlBase + Uri.EscapeUriString(route);
                 var response = await client.GetAsync(new Uri(rou));
 
-                var json = await response.Content.ReadAsStringAsync();                
+                var json = await response.Content.ReadAsStringAsync();
 
-                return new ApiClientResult(response, json);
+                return new ApiClientResult(response, json);                
             }
         }
 
@@ -96,19 +102,31 @@ namespace WarmPack.Web.Rest
 
         public ApiClientResult GetSync(string route)
         {
-            ApiClientResult result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
-
-            Task.Run(async () =>
+            try
             {
-                result = await Get(route);
+                ApiClientResult result = null;
+                //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-                waitHandle.Set();
-            });
+                Task.Run(async () =>
+                {
+                    result = await Get(route);
 
-            waitHandle.WaitOne();
+                    //waitHandle.Set();
 
-            return result;
+                }).Wait();
+
+                //waitHandle.WaitOne();
+
+                return result;
+            }
+            catch(Exception ex)
+            {
+                if(ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }            
         }
 
         public ApiClientResult GetSync(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
@@ -229,16 +247,28 @@ namespace WarmPack.Web.Rest
         public ApiClientResult PostSync(string route, object data)
         {
             ApiClientResult result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
+            //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-            Task.Run(async () =>
+            try
             {
-                result = await Post(route, data);
+                Task.Run(async () =>
+                {
+                    result = await Post(route, data);
 
-                waitHandle.Set();
-            });
+                    //waitHandle.Set();
+                }).Wait();
 
-            waitHandle.WaitOne();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }
+
+            //waitHandle.WaitOne();
 
             return result;
         }
@@ -246,16 +276,27 @@ namespace WarmPack.Web.Rest
         public ApiClientResult<T> PostSync<T>(string route, object data)
         {
             ApiClientResult<T> result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
+            //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-            Task.Run(async () =>
+            try
             {
-                result = await Post<T>(route, data);
+                Task.Run(async () =>
+                {
+                    result = await Post<T>(route, data);
 
-                waitHandle.Set();
-            });
+                //    waitHandle.Set();
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }
 
-            waitHandle.WaitOne();
+            //waitHandle.WaitOne();
 
             return result;
         }
@@ -301,16 +342,26 @@ namespace WarmPack.Web.Rest
         public ApiClientResult PostFormUrlEncodedSync(string route, IEnumerable<KeyValuePair<string, string>> data)
         {
             ApiClientResult result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
+            //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-            Task.Run(async () =>
+            try
             {
-                result = await PostFormUrlEncoded(route, data);
+                Task.Run(async () =>
+                {
+                    result = await PostFormUrlEncoded(route, data);
 
-                waitHandle.Set();
-            });
-
-            waitHandle.WaitOne();
+                //waitHandle.Set();
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }
+            //waitHandle.WaitOne();
 
             return result;
         }
@@ -318,16 +369,26 @@ namespace WarmPack.Web.Rest
         public ApiClientResult<T> PostFormUrlEncodedSync<T>(string route, IEnumerable<KeyValuePair<string, string>> data)
         {
             ApiClientResult<T> result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
+            //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-            Task.Run(async () =>
+            try
             {
-                result = await PostFormUrlEncoded<T>(route, data);
+                Task.Run(async () =>
+                {
+                    result = await PostFormUrlEncoded<T>(route, data);
 
-                waitHandle.Set();
-            });
-
-            waitHandle.WaitOne();
+                //waitHandle.Set();
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }
+            //waitHandle.WaitOne();
 
             return result;
         }
@@ -413,16 +474,26 @@ namespace WarmPack.Web.Rest
         public ApiClientResult<T> PostSync<T>(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             ApiClientResult<T> result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
+            //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-            Task.Run(async () =>
+            try
             {
-                result = await Post<T>(route, data, actionHeaders, contentHeaders);
+                Task.Run(async () =>
+                {
+                    result = await Post<T>(route, data, actionHeaders, contentHeaders);
 
-                waitHandle.Set();
-            });
-
-            waitHandle.WaitOne();
+                //waitHandle.Set();
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }
+            //waitHandle.WaitOne();
 
             return result;
         }
@@ -430,16 +501,26 @@ namespace WarmPack.Web.Rest
         public ApiClientResult PostSync(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             ApiClientResult result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
+            //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-            Task.Run(async () =>
+            try
             {
-                result = await Post(route, data, actionHeaders, contentHeaders);
+                Task.Run(async () =>
+                {
+                    result = await Post(route, data, actionHeaders, contentHeaders);
 
-                waitHandle.Set();
-            });
-
-            waitHandle.WaitOne();
+                //waitHandle.Set();
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }
+            //waitHandle.WaitOne();
 
             return result;
         }
@@ -459,16 +540,27 @@ namespace WarmPack.Web.Rest
         public ApiClientResult DeleteSync(string route)
         {
             ApiClientResult result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
+            //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-            Task.Run(async () =>
+            try
             {
-                result = await Delete(route);
+                Task.Run(async () =>
+                {
+                    result = await Delete(route);
 
-                waitHandle.Set();
-            });
+                //waitHandle.Set();
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }
 
-            waitHandle.WaitOne();
+            //waitHandle.WaitOne();
 
             return result;
         }
@@ -508,16 +600,27 @@ namespace WarmPack.Web.Rest
         public ApiClientResult PutSync(string route, object data)
         {
             ApiClientResult result = null;
-            AutoResetEvent waitHandle = new AutoResetEvent(false);
+            //AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-            Task.Run(async () =>
+            try
             {
-                result = await Put(route, data);
+                Task.Run(async () =>
+                {
+                    result = await Put(route, data);
 
-                waitHandle.Set();
-            });
+                //waitHandle.Set();
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is TaskCanceledException)
+                {
+                    throw new Exception("Tiempo de espera agotado.");
+                }
+                throw ex;
+            }
 
-            waitHandle.WaitOne();
+            //waitHandle.WaitOne();
 
             return result;
         }
