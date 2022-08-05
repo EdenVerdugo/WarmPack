@@ -8,11 +8,12 @@ namespace WarmPack.Extensions
         private static string LogMessage(Exception ex, string extras = "")
         {
             string msg = string.Format(
-                "\r\n => Modulo: {0} \r\n => Clase: {1} \r\n => Metodo: {2} \r\n => Exception: {3} \r\n => Extras: {4}\r\n",
+                "\r\n => Modulo: {0} \r\n => Clase: {1} \r\n => Metodo: {2} \r\n => Exception: {3} \r\n => StackTrace: {4}\r\n => Extras: {5}\r\n",
                 ex?.TargetSite?.Module,
                 ex?.TargetSite?.ReflectedType?.FullName,
                 ex?.TargetSite?.Name,
                 ex?.Message,
+                ex?.StackTrace,
                 extras
                 );
 

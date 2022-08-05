@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +10,13 @@ using WarmPack.Core.Extensions;
 
 namespace WarmPack.Core.Helpers
 {
+    public enum FileArchiver
+    {
+        _7Zip,
+        Rar,
+        Zip
+    }
+
     public static class FileHelper
     {
         private static IDictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase) {
@@ -601,5 +610,126 @@ namespace WarmPack.Core.Helpers
 
             return file.GetMimeType();
         }
-    }
+
+        public static void ZipDirectory(string source, string destination)
+        {
+            ZipFile.CreateFromDirectory(source, destination);            
+        }
+
+        public static void UnZipDirectory(string sourceFileName, string destination)
+        {
+            ZipFile.ExtractToDirectory(sourceFileName, destination);            
+        }
+
+        public static void Zip(string fileName, string zipFileName = "")
+        {
+            bool existe = File.Exists(zipFileName);
+            var fileInfo = new FileInfo(fileName);
+
+            zipFileName = zipFileName == "" ? $@"{ fileInfo.FullName.Replace(fileInfo.Extension, ".zip") }" : zipFileName;
+
+            using (ZipArchive archive = ZipFile.Open(zipFileName, existe ? ZipArchiveMode.Update : ZipArchiveMode.Create))
+            {
+                var f = new FileInfo(fileName);
+
+                archive.CreateEntryFromFile(fileName, f.Name);                  
+            }
+        }
+
+        public static void UnZip(string fileName)
+        {
+            var fileInfo = new FileInfo(fileName);
+
+            ZipFile.ExtractToDirectory(fileName, fileInfo.DirectoryName);
+        }
+
+        public static void Zip(string fileName, FileArchiver fileArchiver)
+        {
+            string archiverSource = "";
+            string argumentos = "";
+
+            var fileInfo = new FileInfo(fileName);
+
+            switch (fileArchiver)
+            {
+                case FileArchiver.Rar:
+                    archiverSource = @"C:\Program Files\WinRAR\Rar.exe";
+                    argumentos = $@"a { fileInfo.FullName.Replace(fileInfo.Extension, ".rar") } {fileInfo.Name}";
+                    break;
+                case FileArchiver.Zip:
+                    Zip(fileName);
+                    break;
+                default:
+                    archiverSource = @"C:\Program Files\7-Zip\7z.exe";
+                    argumentos = $@"a -r { fileInfo.FullName.Replace(fileInfo.Extension, ".7z") } {fileName}";
+                    break;
+            }
+
+            if (!File.Exists(archiverSource))
+            {
+                throw new Exception($"No se puede comprimir el archivo porque encuentra instalado el exe en la carpeta { archiverSource }");
+            }
+
+            var startInfo = new ProcessStartInfo();
+            startInfo.WorkingDirectory = fileInfo.DirectoryName;
+            startInfo.FileName = archiverSource;
+            startInfo.Arguments = argumentos;
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+
+            Process.Start(startInfo).WaitForExit();
+        }
+
+        public static void Unzip(string fileName, FileArchiver fileArchiver)
+        {
+            string archiverSource = "";
+            string argumentos = "";
+
+            var fileInfo = new FileInfo(fileName);
+
+            switch (fileArchiver)
+            {
+                case FileArchiver.Rar:
+                    archiverSource = @"C:\Program Files\WinRAR\Rar.exe";
+                    argumentos = $@"x { fileInfo.FullName.Replace(fileInfo.Extension, ".rar") } -y";
+                    break;
+                case FileArchiver.Zip:
+                    UnZip(fileName);
+                    break;
+                default:
+                    archiverSource = @"C:\Program Files\7-Zip\7z.exe";
+                    argumentos = $@"e { fileInfo.FullName.Replace(fileInfo.Extension, ".7z") } -y";
+                    break;
+            }
+
+            if (!File.Exists(archiverSource))
+            {
+                throw new Exception($"No se puede comprimir el archivo porque encuentra instalado el exe en la carpeta { archiverSource }");
+            }
+
+            var startInfo = new ProcessStartInfo();
+            startInfo.WorkingDirectory = fileInfo.DirectoryName;
+            startInfo.FileName = archiverSource;
+            startInfo.Arguments = argumentos;
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+
+            Process.Start(startInfo).WaitForExit();
+        }
+
+        //public static void Zip(string fileName, ProcessStartInfo otherCompressStartInfo)
+        //{
+        //    if (otherCompressStartInfo == null)
+        //    {
+        //        Zip(fileName, $"{fileName}.zip");
+        //    }
+        //    else
+        //    {
+        //        otherCompressStartInfo.UseShellExecute = false;
+        //        otherCompressStartInfo.CreateNoWindow = true;
+        //        Process.Start(otherCompressStartInfo).WaitForExit();
+        //    }
+        //}
+
+    }    
 }

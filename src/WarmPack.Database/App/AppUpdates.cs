@@ -8,6 +8,7 @@ using WarmPack.Helpers;
 
 namespace WarmPack.Database.App
 {
+    /*
     public static class AppUpdates
     {
         public static void ApplySQL(Conexion conexion, string path)
@@ -87,6 +88,7 @@ namespace WarmPack.Database.App
                     
                 }
             }            
-        }
+        }        
     }
+    */
 }

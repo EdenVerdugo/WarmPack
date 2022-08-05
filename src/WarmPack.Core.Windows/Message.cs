@@ -114,7 +114,7 @@ namespace WarmPack.Windows
             return ShowInput(null, messageBoxText, caption, style, inputType);
         }
 
-        public static T ShowWithOptions<T>(System.Windows.Window owner, string messageBoxText, string caption, MessageStyle style, System.Collections.IList dataSource, MessageWithOptionControlStyle controlsAs, MessageWithOptionSelectionMode selectionMode) where T : IMessageWithOption
+        public static T ShowWithOptions<T>(System.Windows.Window owner, string messageBoxText, string caption, MessageStyle style, System.Collections.IEnumerable dataSource, MessageWithOptionControlStyle controlsAs, MessageWithOptionSelectionMode selectionMode) where T : IMessageWithOption
         {
             var vm = new MessageWithOptionsViewModel();
             var view = new Views.MessageBoxOptionsView();
@@ -139,27 +139,27 @@ namespace WarmPack.Windows
             return vm.MessageResult == MessageResult.OK ? (T)vm.MessageOptionSelected : default(T);
         }
 
-        public static T ShowWithOptions<T>(string messageBoxText, string caption, MessageStyle style, System.Collections.IList dataSource, MessageWithOptionControlStyle controlsAs) where T : IMessageWithOption
+        public static T ShowWithOptions<T>(string messageBoxText, string caption, MessageStyle style, System.Collections.IEnumerable dataSource, MessageWithOptionControlStyle controlsAs) where T : IMessageWithOption
         {
             return ShowWithOptions<T>(null, messageBoxText, caption, style, dataSource, controlsAs, MessageWithOptionSelectionMode.Single);
         }
 
-        public static T ShowWithOptions<T>(string messageBoxText, string caption, MessageStyle style, System.Collections.IList dataSource) where T : IMessageWithOption
+        public static T ShowWithOptions<T>(string messageBoxText, string caption, MessageStyle style, System.Collections.IEnumerable dataSource) where T : IMessageWithOption
         {
             return ShowWithOptions<T>(null, messageBoxText, caption, style, dataSource, MessageWithOptionControlStyle.ComboBox, MessageWithOptionSelectionMode.Single);
         }
 
-        public static T ShowWithOptions<T>(string messageBoxText, MessageStyle style, System.Collections.IList dataSource) where T : IMessageWithOption
+        public static T ShowWithOptions<T>(string messageBoxText, MessageStyle style, System.Collections.IEnumerable dataSource) where T : IMessageWithOption
         {
             return ShowWithOptions<T>(null, messageBoxText, string.Empty, style, dataSource, MessageWithOptionControlStyle.ComboBox, MessageWithOptionSelectionMode.Single);
         }
 
-        public static T ShowWithOptions<T>(string messageBoxText, System.Collections.IList dataSource) where T : IMessageWithOption
+        public static T ShowWithOptions<T>(string messageBoxText, System.Collections.IEnumerable dataSource) where T : IMessageWithOption
         {
             return ShowWithOptions<T>(null, messageBoxText, string.Empty, MessageStyle.Primary, dataSource, MessageWithOptionControlStyle.ComboBox, MessageWithOptionSelectionMode.Single);
         }
 
-        public static T ShowWithOptions<T>(string messageBoxText, System.Collections.IList dataSource, MessageWithOptionControlStyle controlsAs) where T : IMessageWithOption
+        public static T ShowWithOptions<T>(string messageBoxText, System.Collections.IEnumerable dataSource, MessageWithOptionControlStyle controlsAs) where T : IMessageWithOption
         {
             return ShowWithOptions<T>(null, messageBoxText, string.Empty, MessageStyle.Primary, dataSource, controlsAs, MessageWithOptionSelectionMode.Single);
         }
@@ -256,7 +256,7 @@ namespace WarmPack.Windows
 
     public interface IMessageWithOption
     {
-        string OptionDescription { get; set; }
+        string OptionDescription { get; }
         bool IsChecked { get; set; }
     }
 

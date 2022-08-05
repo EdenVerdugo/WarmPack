@@ -25,8 +25,8 @@ namespace WarmPack.Windows.ViewModels
         }
 
 
-        private System.Collections.IList _MessageOptionsDataSource;
-        public System.Collections.IList MessageOptionsDataSource
+        private System.Collections.IEnumerable _MessageOptionsDataSource;
+        public System.Collections.IEnumerable MessageOptionsDataSource
         {
             get
             {
@@ -41,8 +41,8 @@ namespace WarmPack.Windows.ViewModels
 
 
 
-        private System.Collections.IList _MessageOptionsDataSourceMultiple;
-        public System.Collections.IList MessageOptionsDataSourceMultiple
+        private System.Collections.IEnumerable _MessageOptionsDataSourceMultiple;
+        public System.Collections.IEnumerable MessageOptionsDataSourceMultiple
         {
             get
             {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -42,9 +44,11 @@ namespace WarmPack.Database
 
         public bool IsMoreRecordsets { get; set; }
 
+        public ConexionTools Tools { get; set; }
+
         public delegate void ConexionInfoMessageHandler(SqlInfoMessageEventArgs args);
 
-        public event ConexionInfoMessageHandler InfoMessage;
+        public event ConexionInfoMessageHandler InfoMessage;        
 
         protected void ConexionInit(ConexionType conexionType, string connectionString)
         {
@@ -68,6 +72,8 @@ namespace WarmPack.Database
             }
 
             DbSchema = new ConexionSchema(this, conexionType);
+
+            Tools = new ConexionTools(this);
 
             //ConexionHelper = new ConexionHelper(this, conexionType)
             //{
@@ -1050,34 +1056,34 @@ namespace WarmPack.Database
             ConexionInit(_conexionType, _conexionType == ConexionType.MSSQLServer ? ConnectionString.ToMsqlConnectionString() : null);
         }
 
-        public Result[] ExecuteScript(string script)
-        {
-            List<Result> result = new List<Result>();
-            var scripts = script.Split(new string[] { "\r\nGO\r\n", "\r\nGO\t", " GO ", "\tGO\t", " go ", "\r\ngo\r\n", "\tgo\t" }, StringSplitOptions.RemoveEmptyEntries);
+        //public Result[] ExecuteScript(string script)
+        //{
+        //    List<Result> result = new List<Result>();
+        //    var scripts = script.Split(new string[] { "\r\nGO\r\n", "\r\nGO\t", " GO ", "\tGO\t", " go ", "\r\ngo\r\n", "\tgo\t" }, StringSplitOptions.RemoveEmptyEntries);
 
-            scripts
-            //.Map(item =>
-            //{
-            //    return item.Replace("\r", "").Replace("\n", "");
-            //})
-            .ForEach(scriptText =>
-            {
-                try
-                {
-                    var r = this.Execute(scriptText);
-                    r.Data = scriptText;
-                    result.Add(r);
-                }
-                catch(Exception ex)
-                {
-                    result.Add(new Result(ex));
-                }
+        //    scripts
+        //    //.Map(item =>
+        //    //{
+        //    //    return item.Replace("\r", "").Replace("\n", "");
+        //    //})
+        //    .ForEach(scriptText =>
+        //    {
+        //        try
+        //        {
+        //            var r = this.Execute(scriptText);
+        //            r.Data = scriptText;
+        //            result.Add(r);
+        //        }
+        //        catch(Exception ex)
+        //        {
+        //            result.Add(new Result(ex));
+        //        }
                 
-            });
+        //    });
 
-            return result.ToArray();
-        }
-
+        //    return result.ToArray();
+        //}
+        
 
     }
 }
