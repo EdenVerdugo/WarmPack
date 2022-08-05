@@ -25,6 +25,23 @@ namespace WarmPack.Web.Nancy
             }
         }
 
+        public static string Json(this NancyModule context)
+        {
+            var reader = new StreamReader(context.Request.Body);
+            string json = reader.ReadToEnd();
+
+            return json;
+        }
+
+        public static T BindWithJsonConvert<T>(this NancyModule context)
+        {
+            string json = Json(context);
+
+            var r = JsonConvert.DeserializeObject<T>(json);
+
+            return r;
+        }
+
         public static UserModel BindUser(this NancyModule nancy)
         {
             if (nancy.Context.CurrentUser == null) return new UserModel(nancy);
