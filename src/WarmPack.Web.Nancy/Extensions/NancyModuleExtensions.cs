@@ -55,5 +55,26 @@ namespace WarmPack.Web.Nancy
 
             return usuario;
         }
+
+        public static byte[] GetFileBytes(this Request request)
+        {
+            return GetFileBytes(request, "");
+        }
+
+        public static byte[] GetFileBytes(this Request request, string key = "")
+        {
+            var file = key == "" ? request.Files.FirstOrDefault() : request.Files.FirstOrDefault(f => f.Key == key);
+
+            byte[] buffer = null;
+
+            using(var ms  = new MemoryStream())
+            {
+                file.Value.CopyTo(ms);
+                ms.Position = 0;
+                buffer = ms.ToArray();
+            }
+
+            return buffer;
+        }
     }
 }

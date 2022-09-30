@@ -100,7 +100,17 @@ ORDER BY d.name";
             db.Drop();
         }
 
-        private object ExecuteScript(string script, bool withResults)
+        public void ExecuteScript(string script)
+        {
+            _ExecuteScript(script, false);
+        }
+
+        public DataSet ExecuteScriptWithResults(string script)
+        {
+            return _ExecuteScript(script, true) as DataSet;
+        }
+
+        private object _ExecuteScript(string script, bool withResults)
         {
             try
             {
@@ -147,7 +157,7 @@ Si es un problema de incompatibilidad con el framework trata de que en el archiv
             {
                 var script = new System.IO.FileInfo(fileName).OpenText().ReadToEnd();
 
-                var result = ExecuteScript(script, false) as int?;
+                var result = _ExecuteScript(script, false) as int?;
 
                 return result.Value;
             }
@@ -160,7 +170,7 @@ Si es un problema de incompatibilidad con el framework trata de que en el archiv
 
         public DataSet ExecuteScriptWithResultsFromFile(string fileName)
         {
-            var result = ExecuteScript(fileName, false) as DataSet;
+            var result = _ExecuteScript(fileName, true) as DataSet;
 
             return result;
         }
@@ -221,7 +231,7 @@ GO
 
 ";            
 
-            ExecuteScript(query, false);            
+            _ExecuteScript(query, false);            
         }
 
 
