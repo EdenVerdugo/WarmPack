@@ -1,6 +1,4 @@
-﻿using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -42,9 +40,7 @@ namespace WarmPack.Database
 
         public ConexionSchema DbSchema { get; set; }
 
-        public bool IsMoreRecordsets { get; set; }
-
-        public ConexionTools Tools { get; set; }
+        public bool IsMoreRecordsets { get; set; }        
 
         public delegate void ConexionInfoMessageHandler(SqlInfoMessageEventArgs args);
 
@@ -73,7 +69,7 @@ namespace WarmPack.Database
 
             DbSchema = new ConexionSchema(this, conexionType);
 
-            Tools = new ConexionTools(this);
+            //Tools = new ConexionTools(this);
 
             //ConexionHelper = new ConexionHelper(this, conexionType)
             //{

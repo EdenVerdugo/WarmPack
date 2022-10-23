@@ -79,11 +79,11 @@ ORDER BY d.name";
             var server = new Server(new ServerConnection(sqlConnection));
             var db = server.Databases[dbName];
 
-            if(db == null)
+            if (db == null)
             {
                 throw new Exception("No se encontró la base de datos");
             }
-            
+
             db.Rename(dbNewName);
         }
 
@@ -161,11 +161,11 @@ Si es un problema de incompatibilidad con el framework trata de que en el archiv
 
                 return result.Value;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
-            
+
         }
 
         public DataSet ExecuteScriptWithResultsFromFile(string fileName)
@@ -206,7 +206,7 @@ Si es un problema de incompatibilidad con el framework trata de que en el archiv
         {
             if (System.IO.File.Exists(backupFileName))
             {
-                System.IO.File.Move(backupFileName, $"{backupFileName.Replace(".bak", "").Replace(".txt","").Replace(".data","")}-{ Guid.NewGuid() }(Backup de Backup).bak");
+                System.IO.File.Move(backupFileName, $"{backupFileName.Replace(".bak", "").Replace(".txt", "").Replace(".data", "")}-{ Guid.NewGuid() }(Backup de Backup).bak");
             }
 
             string query = $@"
@@ -229,81 +229,81 @@ ALTER DATABASE {dbName}
 SET RECOVERY FULL;
 GO
 
-";            
+";
 
-            _ExecuteScript(query, false);            
+            _ExecuteScript(query, false);
         }
 
 
-//        /// <summary>
-//        /// 
-//        /// </summary>
-//        /// <param name="dbName">Nombre de la base de datos</param>
-//        /// <param name="srcBak">Ruta del archivo .bak</param>
-//        /// <param name="mdf">Ruta para el archivo de la base de datos (mdf)</param>
-//        /// <param name="ldf">Ruta para el archivo log (ldf)</param>
-//        public void RestoreDatabaseBackup(string dbName, string srcBak, string mdfName, string ldfName)
-//        {
-//            string guid = Guid.NewGuid().ToString();
+        //        /// <summary>
+        //        /// 
+        //        /// </summary>
+        //        /// <param name="dbName">Nombre de la base de datos</param>
+        //        /// <param name="srcBak">Ruta del archivo .bak</param>
+        //        /// <param name="mdf">Ruta para el archivo de la base de datos (mdf)</param>
+        //        /// <param name="ldf">Ruta para el archivo log (ldf)</param>
+        //        public void RestoreDatabaseBackup(string dbName, string srcBak, string mdfName, string ldfName)
+        //        {
+        //            string guid = Guid.NewGuid().ToString();
 
 
-//            //var query = $@"USE MASTER RESTORE DATABASE {dbName} FROM DISK = '{srcBak}' WITH RECOVERY, MOVE '{dbName}' TO '{mdf}', MOVE '{dbName}_log' TO '{ldf}', REPLACE";
-//            //_conexion.Execute(query);
+        //            //var query = $@"USE MASTER RESTORE DATABASE {dbName} FROM DISK = '{srcBak}' WITH RECOVERY, MOVE '{dbName}' TO '{mdf}', MOVE '{dbName}_log' TO '{ldf}', REPLACE";
+        //            //_conexion.Execute(query);
 
-//            var srcDb = _conexion.ExecuteScalar("SELECT SERVERPROPERTY('InstanceDefaultDataPath')").ToString();
-
-
-//            string dbNameCopia = dbName + "Copia" + DateTime.Now.ToString("yyyyMMddhhmmss");
-//            string dbNameBak = dbName + "Backup" + DateTime.Now.ToString("yyyyMMddhhmmss");
-//            var script = $@"
-//USE MASTER
-
-//GO
-
-//CREATE DATABASE {dbNameCopia}
-//ON
-//(NAME = '{mdfName}',FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.mdf')
-//LOG ON
-//(NAME = '{ldfName}',FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.ldf') 
-	
-//GO
-
-//RESTORE DATABASE {dbNameCopia} 
-//FROM DISK = '{srcBak}' 
-//WITH RECOVERY, 
-//MOVE '{dbName}' TO 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.mdf', 
-//MOVE '{dbName}_log' TO 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.ldf',
-//REPLACE
-
-//IF EXISTS(SELECT * FROM sys.databases d WHERE d.name = '{dbName}')
-//BEGIN
-	
-//    ALTER DATABASE { dbName } 
-//    SET SINGLE_USER 
-//    WITH ROLLBACK IMMEDIATE    
-
-//	EXEC sys.sp_renamedb '{ dbName }', '{ dbNameBak }'
-
-//    ALTER DATABASE { dbNameBak } 
-//    SET MULTI_USER 
-//END
-
-//GO
+        //            var srcDb = _conexion.ExecuteScalar("SELECT SERVERPROPERTY('InstanceDefaultDataPath')").ToString();
 
 
-//ALTER DATABASE { dbNameCopia } 
-//SET SINGLE_USER 
-//WITH ROLLBACK IMMEDIATE    
+        //            string dbNameCopia = dbName + "Copia" + DateTime.Now.ToString("yyyyMMddhhmmss");
+        //            string dbNameBak = dbName + "Backup" + DateTime.Now.ToString("yyyyMMddhhmmss");
+        //            var script = $@"
+        //USE MASTER
 
-//EXEC sys.sp_renamedb '{ dbNameCopia }', '{ dbName }'
+        //GO
 
-//ALTER DATABASE { dbName } 
-//SET MULTI_USER 
+        //CREATE DATABASE {dbNameCopia}
+        //ON
+        //(NAME = '{mdfName}',FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.mdf')
+        //LOG ON
+        //(NAME = '{ldfName}',FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.ldf') 
 
-//";
-//            ExecuteScript(script, false);
+        //GO
 
-//        }
+        //RESTORE DATABASE {dbNameCopia} 
+        //FROM DISK = '{srcBak}' 
+        //WITH RECOVERY, 
+        //MOVE '{dbName}' TO 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.mdf', 
+        //MOVE '{dbName}_log' TO 'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\{dbNameCopia}.ldf',
+        //REPLACE
+
+        //IF EXISTS(SELECT * FROM sys.databases d WHERE d.name = '{dbName}')
+        //BEGIN
+
+        //    ALTER DATABASE { dbName } 
+        //    SET SINGLE_USER 
+        //    WITH ROLLBACK IMMEDIATE    
+
+        //	EXEC sys.sp_renamedb '{ dbName }', '{ dbNameBak }'
+
+        //    ALTER DATABASE { dbNameBak } 
+        //    SET MULTI_USER 
+        //END
+
+        //GO
+
+
+        //ALTER DATABASE { dbNameCopia } 
+        //SET SINGLE_USER 
+        //WITH ROLLBACK IMMEDIATE    
+
+        //EXEC sys.sp_renamedb '{ dbNameCopia }', '{ dbName }'
+
+        //ALTER DATABASE { dbName } 
+        //SET MULTI_USER 
+
+        //";
+        //            ExecuteScript(script, false);
+
+        //        }
 
         public AutoResetEvent DatabaseRestoreBackup(string dbName, string srcBackup, Action<RestoreDatabaseBackupEventArgs> onPercentComplete = null, Action<SqlError> onComplete = null)
         {
@@ -353,7 +353,7 @@ GO
             restoreDB.SqlRestore(server);
 
             return waitHandle;
-        }        
+        }
     }
 }
 
@@ -366,7 +366,7 @@ public class RestoreDatabaseBackupEventArgs
 
     public RestoreDatabaseBackupEventArgs()
     {
-        
+
     }
 
     public RestoreDatabaseBackupEventArgs(SqlError error, string message, int percent)
