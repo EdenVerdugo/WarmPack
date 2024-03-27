@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Magic", "WarmPack.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmPack.Database.Extended", "WarmPack.Database.Extended\WarmPack.Database.Extended.csproj", "{426E8681-AC90-4DF7-B4B9-BB2054A2A853}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warmpack.Pruebas", "Warmpack.Pruebas\Warmpack.Pruebas.csproj", "{6DCC1C74-2578-4AB4-B5B4-C1AF65216E0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{426E8681-AC90-4DF7-B4B9-BB2054A2A853}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{426E8681-AC90-4DF7-B4B9-BB2054A2A853}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{426E8681-AC90-4DF7-B4B9-BB2054A2A853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DCC1C74-2578-4AB4-B5B4-C1AF65216E0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DCC1C74-2578-4AB4-B5B4-C1AF65216E0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DCC1C74-2578-4AB4-B5B4-C1AF65216E0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DCC1C74-2578-4AB4-B5B4-C1AF65216E0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,7 +19,7 @@ namespace WarmPack.App
         {
             get
             {
-                return Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
+                return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             }
         }
 
@@ -30,7 +30,7 @@ namespace WarmPack.App
         {
             get
             {
-                return Assembly.GetCallingAssembly()?.GetName()?.Name;
+                return Assembly.GetEntryAssembly()?.GetName()?.Name;
             }
         }
 
@@ -39,7 +39,7 @@ namespace WarmPack.App
             get
             {
                 //return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
-                return Assembly.GetCallingAssembly().GetName().Version.ToString();
+                return Assembly.GetEntryAssembly().GetName().Version.ToString();
             }
         }
 
