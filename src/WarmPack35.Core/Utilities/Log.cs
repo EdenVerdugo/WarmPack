@@ -15,7 +15,7 @@ namespace WarmPack.Utilities
         {
             if (string.IsNullOrEmpty(directory))
             {
-                directory = @"C:\Logs\";                
+                directory = $@"C:\Logs\{ Globals.ApplicationName }\{ DateTime.Now.ToString("yyyy")}\{ DateTime.Now.ToString("MM")}";
             }
 
             DirectoryHelper.CreateDirectories(directory);
