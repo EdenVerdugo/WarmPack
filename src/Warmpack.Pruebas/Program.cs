@@ -11,16 +11,7 @@ namespace Warmpack.Pruebas
     {
         static void Main(string[] args)
         {
-            int x = 0;
-
-            try
-            {
-                int y = 1 / x;
-            }
-            catch(Exception ex)
-            {
-                ex.Log();
-            }
+            var p = WarmPack.App.Globals.CombinePathName("changos");
 
         }
     }

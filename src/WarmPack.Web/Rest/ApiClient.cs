@@ -136,7 +136,7 @@ namespace WarmPack.Web.Rest
 
             Task.Run(async () =>
             {
-                result = await Get(route, actionHeaders, contentHeaders);
+                result = await GetAsync(route, actionHeaders, contentHeaders);
 
                 waitHandle.Set();
             });
@@ -169,7 +169,7 @@ namespace WarmPack.Web.Rest
             return result;
         }
 
-        public static async Task<ApiClientResult> Get(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        public static async Task<ApiClientResult> GetAsync(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             var client = new ApiClient("");
 
@@ -186,7 +186,7 @@ namespace WarmPack.Web.Rest
             return await client.Get(route);
         }
 
-        public static async Task<ApiClientResult<T>> Get<T>(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        public static async Task<ApiClientResult<T>> GetAsync<T>(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             var client = new ApiClient("");
 
@@ -211,7 +211,7 @@ namespace WarmPack.Web.Rest
             {
                 Task.Run(async () =>
                 {
-                    result = await Get<T>(route, actionHeaders, contentHeaders);
+                    result = await GetAsync<T>(route, actionHeaders, contentHeaders);
                 }).Wait();
             }
             catch (Exception ex)
@@ -449,7 +449,7 @@ namespace WarmPack.Web.Rest
             }
         }
 
-        public static async Task<ApiClientResult> Post(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        public static async Task<ApiClientResult> PostAsync(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             var client = new ApiClient("");
 
@@ -466,7 +466,7 @@ namespace WarmPack.Web.Rest
             return await client.Post(route, data);
         }
 
-        public static async Task<ApiClientResult<T>> Post<T>(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        public static async Task<ApiClientResult<T>> PostAsync<T>(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             var client = new ApiClient("");
 
@@ -492,7 +492,7 @@ namespace WarmPack.Web.Rest
             {
                 Task.Run(async () =>
                 {
-                    result = await Post<T>(route, data, actionHeaders, contentHeaders);
+                    result = await PostAsync<T>(route, data, actionHeaders, contentHeaders);
 
                 //waitHandle.Set();
                 }).Wait();
@@ -519,7 +519,7 @@ namespace WarmPack.Web.Rest
             {
                 Task.Run(async () =>
                 {
-                    result = await Post(route, data, actionHeaders, contentHeaders);
+                    result = await PostAsync(route, data, actionHeaders, contentHeaders);
 
                 //waitHandle.Set();
                 }).Wait();
@@ -577,7 +577,7 @@ namespace WarmPack.Web.Rest
             return result;
         }
 
-        public static async Task<ApiClientResult> Delete(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        public static async Task<ApiClientResult> DeleteAsync(string route, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             var client = new ApiClient("");
 
@@ -637,7 +637,7 @@ namespace WarmPack.Web.Rest
             return result;
         }
 
-        public static async Task<ApiClientResult> Put(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
+        public static async Task<ApiClientResult> PutAsync(string route, object data, Action<HttpRequestHeaders> actionHeaders = null, Action<HttpContentHeaders> contentHeaders = null)
         {
             var client = new ApiClient("");
 
